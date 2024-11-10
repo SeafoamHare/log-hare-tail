@@ -1,0 +1,45 @@
+# Ignore all log files
+*.log
+log/
+*.app.log
+
+# Ignore build output directories
+build/
+bin/
+out/
+Debug/
+Release/
+x64/
+x86/
+
+# Ignore all executable files
+*.exe
+*.out
+*.app
+
+# Ignore object files and libraries
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+
+# Ignore CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE specific files
+.vs/
+.vscode/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# OS specific files
+.DS_Store
+Thumbs.db
