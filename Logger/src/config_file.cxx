@@ -1,20 +1,8 @@
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <sys/stat.h>
-#include <cstring>
-#include <mutex>
 
-using json = nlohmann::json;
-class Config_File
-{
-public:
-    std::string filename;
-    size_t max_size;
-    int max_files;
-    std::string app_name;
-    std::string log_directory;
+#include "../include/config_file.h"
 
-    Config_File(const std::string &config_file)
+
+Config_File::Config_File(const std::string &config_file)
     {
         std::ifstream file(config_file);
         if (!file.is_open())
@@ -35,10 +23,10 @@ public:
         {
             throw std::runtime_error("Unable to create log directory: " + log_directory + ", error: " + std::strerror(errno));
         }
-    }
+    };
 
-private:
-    bool createDirectory(const std::string &path)
+
+bool Config_File::createDirectory(const std::string &path)
     {
         size_t pos = 0;
         std::string dir;
@@ -64,5 +52,4 @@ private:
 
         int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         return (status == 0 || errno == EEXIST);
-    }
-};
+    };

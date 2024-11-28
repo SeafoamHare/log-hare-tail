@@ -30,7 +30,6 @@ x86/
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-Makefile
 
 # IDE specific files
 .vs/

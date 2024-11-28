@@ -13,7 +13,7 @@
 #include <mutex>
 #include <vector>
 // #include "logMessage.cpp"
-#include "src/logger.cxx"
+#include "include/logger.h"
 void workerFunction(int id)
 {
     for (int i = 0; i < 10; ++i)
