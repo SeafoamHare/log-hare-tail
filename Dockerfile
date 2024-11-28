@@ -7,21 +7,12 @@ ENV TZ=UTC
 # 更新系統並安裝必要的包
 RUN apt-get update && apt-get install -y \
     build-essential \
-    cmake \
-    git \
     wget \
     curl \
-    unzip \
-    lsb-release \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# 下載並安裝 Google Test
-RUN git clone --branch release-1.11.0 https://github.com/google/googletest.git /googletest \
-    && cd /googletest \
-    && cmake . \
-    && make \
-    && make install
+    apt install libgtest-dev -y \
+    cd /usr/src/gtest \
+    cmake CMakeLists.txt \
+    make \
 
 # 設置工作目錄
 WORKDIR /workspace
