@@ -42,7 +42,7 @@ A thread-safe, feature-rich logging system for C++ applications with JSON consol
 
 ```
 $ sudo apt-get update
-$ sudo apt-get install libjsoncpp-dev
+$ sudo apt-get nlohmann-json3-dev
 ```
 
 ## Configuration
@@ -89,14 +89,14 @@ int main() {
     try {
         // Initialize the logger
         Logger::getInstance().initialize("config.json");
-        LOG_INFO("DEVICE-001","POD-ID") << "Application started" << std::endl;
+        LOG_INFO("DEVICE-001") << "Application started" << std::endl;
 
         // Log messages
-        LOG_INFO("DEVICE-001","POD-ID") << "This is a info message" << std::endl;
-        LOG_WARN("DEVICE-001","POD-ID") << "This is a warning message" << std::endl;
-        LOG_ERROR("DEVICE-001","POD-ID") << "This is a error message" << std::endl;
-        LOG_CRITICAL("DEVICE-001","POD-ID") << "This is a critical message" << std::endl;
-        LOG_DEBUG("DEVICE-001","POD-ID") << "This is a debug message" << std::endl;
+        LOG_INFO("DEVICE-001") << "This is a info message" << std::endl;
+        LOG_WARN("DEVICE-001") << "This is a warning message" << std::endl;
+        LOG_ERROR("DEVICE-001") << "This is a error message" << std::endl;
+        LOG_CRITICAL("DEVICE-001") << "This is a critical message" << std::endl;
+        LOG_DEBUG("DEVICE-001") << "This is a debug message" << std::endl;
         
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -118,13 +118,13 @@ int main() {
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
-  "pod.id":"hare-ThinkPad-E16-Gen-2"
+  "pod.id":"hare-pod-2"
 }
 ```
 
 #### File Output (Plain Text)
 ```
-2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (device: DEVICE-001) (pod.id: device-state-provider-6c58ffdbb8-f2m6m)
+2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (device: DEVICE-001) (pod.id: device-pod-provider-6c58ffdbb8-f2m6m)
 ```
 ### Output Format ( Without device id )
 
@@ -138,7 +138,7 @@ int main() {
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
-  "pod.id":"hare-ThinkPad-E16-Gen-2"
+  "pod.id":"hare-pod-2"
 }
 ```
 
@@ -192,9 +192,13 @@ The logger uses exceptions to handle errors:
 ## Directory Structure
 ```
 Logger/
+├── include/              # Header files
+│   ├── logger.h/       # Level Struct
+│   ├── config_file.h/  
+│   └── podInfo_Retriever.h/  
 ├── src/              # Source files
-│   ├── logger/       # Core functionality
-│   ├── config_file/  # Additional modules
+│   ├── logger.cxx/       # Core functionality
+│   ├── config_file.cxx/  # Additional modules
 │   └── podInfo_Retriever.cxx/  # Get PODid
 ```
 ## License
