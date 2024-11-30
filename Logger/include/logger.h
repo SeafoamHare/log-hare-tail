@@ -1,3 +1,6 @@
+#ifndef LOGGER_H
+#define LOGGER_H
+
 #include <ctime>
 #include <iomanip>
 #include <filesystem>
@@ -179,3 +182,5 @@ private:
     std::string formatJsonMessage(Level level, const std::string &message, const std::string &logger_name, const std::string &file, int line);
     std::string formatPlainMessage(Level level, const std::string &message, const std::string &logger_name, const std::string &file, int line);
 };
+
+#endif // LOGGER_H

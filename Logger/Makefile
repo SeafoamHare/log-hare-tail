@@ -2,34 +2,30 @@
 CXX = g++
 CXXFLAGS = -pthread
 INCLUDE = -I./include
-SRC = main.cpp ./src/logger.cxx ./src/config_file.cxx
+SRC_DIR = ./src
 OUT = logimp
-OBJDIR = obj
-OBJ = $(OBJDIR)/main.o $(OBJDIR)/logger.o $(OBJDIR)/config_file.o
+OBJ_DIR = ./obj
+OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/config_file.o $(OBJ_DIR)/podInfo_Retriever.o
 
 # 預設目標
-all: $(OBJDIR)/$(OUT)
+all: $(OBJ_DIR)/$(OUT)
 
 # 編譯並鏈接
-$(OBJDIR)/$(OUT): $(OBJ)
-	$(CXX) $(OBJ) $(CXXFLAGS) -o $(OBJDIR)/$(OUT)
+$(OBJ_DIR)/$(OUT): $(OBJ)
+	$(CXX) $(OBJ) $(CXXFLAGS) -o $(OBJ_DIR)/$(OUT)
 
 # 編譯 source 檔案為 object 檔案
-$(OBJDIR)/main.o: main.cpp
-	@mkdir -p $(OBJDIR)
-	$(CXX) -c main.cpp $(INCLUDE) $(CXXFLAGS) -o $(OBJDIR)/main.o
+$(OBJ_DIR)/main.o: main.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) -c main.cpp $(INCLUDE) $(CXXFLAGS) -o $(OBJ_DIR)/main.o
 
-$(OBJDIR)/logger.o: ./src/logger.cxx
-	@mkdir -p $(OBJDIR)
-	$(CXX) -c ./src/logger.cxx $(INCLUDE) $(CXXFLAGS) -o $(OBJDIR)/logger.o
-
-$(OBJDIR)/config_file.o: ./src/config_file.cxx
-	@mkdir -p $(OBJDIR)
-	$(CXX) -c ./src/config_file.cxx $(INCLUDE) $(CXXFLAGS) -o $(OBJDIR)/config_file.o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx
+	@mkdir -p $(OBJ_DIR)  
+	$(CXX) -c $< $(INCLUDE) $(CXXFLAGS) -o $@
 
 # 清除編譯結果
 clean:
-	rm -f $(OBJDIR)/*.o $(OBJDIR)/$(OUT)
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/$(OUT) -r ./log
 
 run:
-	$(OBJDIR)/$(OUT)
+	$(OBJ_DIR)/$(OUT)
