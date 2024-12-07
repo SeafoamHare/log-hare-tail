@@ -17,7 +17,7 @@
 #include <vector>
 #include "podInfo_Retriever.h"
 #include "config_file.h"
-
+#include "Level.h"
 using json = nlohmann::json;
 // 只在 C++11 環境下定義 make_unique
 #if __cplusplus == 201103L
@@ -43,39 +43,30 @@ namespace std
     make_unique(Args &&...) = delete;
 }
 #endif
-#define LOG_DEBUG(device_id)                                                           \
-    Logger::getInstance() << Logger::Level::DEBUG << Logger::LogFunction(__FUNCTION__) \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__)    \
+#define LOG_DEBUG(device_id)                                                        \
+    Logger::getInstance() << Level::DEBUG << Logger::LogFunction(__FUNCTION__)      \
+                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
                           << Logger::DeviceId(device_id)
-#define LOG_INFO(device_id)                                                           \
-    Logger::getInstance() << Logger::Level::INFO << Logger::LogFunction(__FUNCTION__) \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__)   \
+#define LOG_INFO(device_id)                                                         \
+    Logger::getInstance() << Level::INFO << Logger::LogFunction(__FUNCTION__)       \
+                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
                           << Logger::DeviceId(device_id)
-#define LOG_WARN(device_id)                                                           \
-    Logger::getInstance() << Logger::Level::WARN << Logger::LogFunction(__FUNCTION__) \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__)   \
+#define LOG_WARN(device_id)                                                         \
+    Logger::getInstance() << Level::WARN << Logger::LogFunction(__FUNCTION__)       \
+                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
                           << Logger::DeviceId(device_id)
-#define LOG_ERROR(device_id)                                                           \
-    Logger::getInstance() << Logger::Level::ERROR << Logger::LogFunction(__FUNCTION__) \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__)    \
+#define LOG_ERROR(device_id)                                                        \
+    Logger::getInstance() << Level::ERROR << Logger::LogFunction(__FUNCTION__)      \
+                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
                           << Logger::DeviceId(device_id)
-#define LOG_CRITICAL(device_id)                                                           \
-    Logger::getInstance() << Logger::Level::CRITICAL << Logger::LogFunction(__FUNCTION__) \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__)       \
+#define LOG_CRITICAL(device_id)                                                     \
+    Logger::getInstance() << Level::CRITICAL << Logger::LogFunction(__FUNCTION__)   \
+                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
                           << Logger::DeviceId(device_id)
 
 class Logger
 {
 public:
-    enum class Level
-    {
-        DEBUG,
-        INFO,
-        WARN,
-        ERROR,
-        CRITICAL
-    };
-
     static Logger &getInstance()
     {
         static Logger instance;
@@ -177,7 +168,6 @@ private:
     thread_local static int _line;
     thread_local static std::string _device_id;
     void rotate();
-    std::string levelToString(Level level);
     std::string getCurrentTimestamp();
     std::string formatJsonMessage(Level level, const std::string &message, const std::string &logger_name, const std::string &file, int line);
     std::string formatPlainMessage(Level level, const std::string &message, const std::string &logger_name, const std::string &file, int line);

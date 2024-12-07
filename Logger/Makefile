@@ -5,7 +5,7 @@ INCLUDE = -I./include
 SRC_DIR = ./src
 OUT = logimp
 OBJ_DIR = ./obj
-OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/config_file.o $(OBJ_DIR)/podInfo_Retriever.o
+OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/config_file.o $(OBJ_DIR)/podInfo_Retriever.o $(OBJ_DIR)/Level.o
 
 # 預設目標
 all: $(OBJ_DIR)/$(OUT)

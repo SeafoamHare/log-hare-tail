@@ -69,25 +69,6 @@ std::string Logger::getCurrentTimestamp()
     return ss.str();
 }
 
-std::string Logger::levelToString(Level level)
-{
-    switch (level)
-    {
-    case Level::INFO:
-        return "INFO";
-    case Level::WARN:
-        return "WARN";
-    case Level::ERROR:
-        return "ERROR";
-    case Level::CRITICAL:
-        return "CRITICCAL";
-    case Level::DEBUG:
-        return "DEBUG";
-    default:
-        return "UNKNOWN";
-    }
-}
-
 std::string Logger::formatJsonMessage(Level level, const std::string &message, const std::string &logger_name, const std::string &file, int line)
 {
     // std::ostringstream oss;
@@ -161,7 +142,7 @@ void Logger::rotate()
 
 // 初始化 thread_local 變量
 thread_local std::ostringstream Logger::_stream;
-thread_local Logger::Level Logger::_level = Logger::Level::DEBUG;
+thread_local Level Logger::_level = Level::DEBUG;
 thread_local std::string Logger::_function;
 thread_local std::string Logger::_local_file;
 thread_local int Logger::_line = 0;
