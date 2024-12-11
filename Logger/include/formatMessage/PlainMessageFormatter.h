@@ -4,7 +4,7 @@
 #include <string>
 #include "MessageFormatter.h"
 
-class PlainMessageFormatter : MessageFormatter
+class PlainMessageFormatter : public MessageFormatter
 {
 public:
     std::string format(sysInfoModel sysInfo, logInfoModel loginfo) override;

@@ -172,16 +172,8 @@ private:
     std::mutex m_mutex;
     thread_local static std::ostringstream _stream;
     thread_local static logInfoModel _logInfo;
-    thread_local static sysInfoModel _sysInfo;
-    // thread_local static LogLevel _level;
-    // thread_local static std::string _function;
-    // thread_local static std::string _local_file;
-    // thread_local static int _line;
-    // thread_local static std::string _device_id;
+    sysInfoModel _sysInfo;
     void rotate();
-    // std::string getCurrentTimestamp();
-    // std::string formatJsonMessage(LogLevel level, const std::string &message, const std::string &logger_name, const std::string &file, int line);
-    // std::string formatPlainMessage(LogLevel level, const std::string &message, const std::string &logger_name, const std::string &file, int line);
 };
 
 #endif // LOGGER_H
