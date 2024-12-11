@@ -1,6 +1,7 @@
 # Ignore all log files
 *.log
 log/
+obj/
 *.app.log
 
 # Ignore build output directories
