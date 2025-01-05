@@ -42,7 +42,7 @@ A thread-safe, feature-rich logging system for C++ applications with JSON consol
 
 ```
 $ sudo apt-get update
-$ sudo apt-get nlohmann-json3-dev
+$ sudo apt-get install nlohmann-json3-dev
 ```
 
 ## Configuration
