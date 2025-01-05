@@ -7,7 +7,7 @@ std::string PodInfoRetriever::getPodId()
     {
         throw std::runtime_error("Failed to get hostname");
     }
-    std::cout << std::string(hostname) << std::endl;
+    // std::cout << std::string(hostname) << std::endl;
     return std::string(hostname);
 }
 

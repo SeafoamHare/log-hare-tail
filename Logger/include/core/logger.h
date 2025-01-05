@@ -1,20 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <ctime>
-#include <iomanip>
-#include <filesystem>
-#include <sstream>
-#include <iostream>
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <stdexcept>
-#include <sys/stat.h>
-#include <errno.h>
-#include <cstring>
-#include <thread>
 #include <mutex>
-#include <vector>
 #include "podInfo_Retriever.h"
 #include "config_file.h"
 #include "LogLevel.h"
@@ -23,8 +10,8 @@
 #include "formatMessage/JsonMessageFormatter.h"
 #include "formatMessage/MessageFormatter.h"
 #include "formatMessage/PlainMessageFormatter.h"
+#include "log_store_controller.h"
 
-using json = nlohmann::json;
 // 只在 C++11 環境下定義 make_unique
 #if __cplusplus == 201103L
 namespace std
@@ -166,14 +153,12 @@ private:
 
     std::unique_ptr<Config_File> m_config;
     std::shared_ptr<MessageFormatter> _formatter;
-    std::ofstream m_file;
-    std::string m_full_path;
-    // std::string m_pod_id;
     std::mutex m_mutex;
     thread_local static std::ostringstream _stream;
     thread_local static logInfoModel _logInfo;
-    sysInfoModel _sysInfo;
-    void rotate();
+    sysInfoModel sysInfo_;
+    std::unique_ptr<LogStoreController> logStoreController;
+    // void rotate();
 };
 
 #endif // LOGGER_H
