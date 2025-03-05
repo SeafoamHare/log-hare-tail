@@ -162,34 +162,7 @@ app.log      # Current log file
 3.app.log    # Third most recent backup
 ```
 
-## Thread Safety
-
-The logger is designed to be thread-safe:
-- Critical parameters (file paths, log levels, logger names, etc.) are isolated per thread using thread-local storage
-- File operations are protected by a mutex
-- Configuration is thread-safe after initialization
-
-## Error Handling
-
-The logger uses exceptions to handle errors:
-- Configuration errors (invalid JSON, missing required fields)
-- File system errors (permission denied, disk full)
-- Runtime errors
-
-## Best Practices
-
-1. Initialize the logger early in your application
-2. Use appropriate log levels:
-   - DEBUG: Detailed information for debugging
-   - INFO: General operational messages
-   - WARN: Warning messages for potential issues
-   - ERROR: Error messages for actual problems
-   - CRITICAL: Critical errors that require immediate attention
-
-3. Include relevant context in log messages
-4. Monitor log rotation to ensure adequate disk space
-5. Configure appropriate max_size and max_files for your use case
-## Directory Structure
+<!-- ## Directory Structure
 ```
 Logger/
 ├── include/              # Header files
@@ -200,7 +173,7 @@ Logger/
 │   ├── logger.cxx/       # Core functionality
 │   ├── config_file.cxx/  # Additional modules
 │   └── podInfo_Retriever.cxx/  # Get PODid
-```
+``` -->
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
