@@ -11,7 +11,6 @@ std::string PodInfoRetriever::getPodId()
     return std::string(hostname);
 }
 
-// 從環境變數獲取 Pod IP
 std::string PodInfoRetriever::getPodIp()
 {
     const char *podIp = std::getenv("POD_IP");
@@ -22,7 +21,6 @@ std::string PodInfoRetriever::getPodIp()
     return std::string(podIp);
 }
 
-// 從環境變數獲取命名空間
 std::string PodInfoRetriever::getNamespace()
 {
     const char *ns = std::getenv("POD_NAMESPACE");

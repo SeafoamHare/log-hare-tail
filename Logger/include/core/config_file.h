@@ -14,18 +14,16 @@ using json = nlohmann::json;
 class Config_File
 {
 public:
-  // 構造函數，從配置檔案讀取配置
   explicit Config_File(const std::string &config_file);
 
-  // 配置文件相關屬性
-  std::string filename;      // 日誌文件名
-  size_t max_size;           // 日誌文件的最大大小
-  int max_files;             // 最多保留的日誌文件數量
-  std::string app_name;      // 應用程序名稱
-  std::string log_directory; // 日誌存放目錄
+  // Configuration file related properties
+  std::string filename;      // Name of the log file
+  size_t max_size;           // Maximum size of each log file in bytes
+  int max_files;             // Maximum number of backup files to keep
+  std::string app_name;      // Name of the application
+  std::string log_directory; // Directory where log files will be stored
 
 private:
-  // 創建目錄，並確保父目錄也存在
   bool createDirectory(const std::string &path);
 };
 

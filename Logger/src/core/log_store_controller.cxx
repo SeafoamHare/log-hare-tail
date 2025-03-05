@@ -30,7 +30,6 @@ void LogStoreController::Write(const std::string &logmsg)
         file_ << logmsg << std::endl;
         file_.flush();
 
-        // Check file size and rotate if necessary
         file_.seekp(0, std::ios::end);
         if (static_cast<size_t>(file_.tellp()) >= file_max_size_)
         {

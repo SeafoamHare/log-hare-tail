@@ -12,7 +12,7 @@
 #include "formatMessage/PlainMessageFormatter.h"
 #include "log_store_controller.h"
 
-// 只在 C++11 環境下定義 make_unique
+// make_unique is only defined in C++11
 #if __cplusplus == 201103L
 namespace std
 {
@@ -68,11 +68,9 @@ public:
 
     void initialize(const std::string &config_file);
 
-    // Delete copy constructor and assignment operator
     Logger(Logger const &) = delete;
     void operator=(Logger const &) = delete;
 
-    // 用包裝結構來定義特定 __FUNCTION__, __FILE__, __LINE__
     struct LogLine
     {
         int value;
@@ -94,11 +92,10 @@ public:
     struct DeviceId
     {
         std::string value;
-        DeviceId() : value("") {} // 添加默認構造函數
+        DeviceId() : value("") {}
         explicit DeviceId(const std::string &id) : value(id) {}
     };
 
-    // 重载输出流操作符
     template <typename T>
     Logger &operator<<(const T &value)
     {
@@ -136,11 +133,10 @@ public:
         return *this;
     }
 
-    // 结束符：输出流结束时调用log()
     Logger &operator<<(std::ostream &(*endl)(std::ostream &))
     {
         log();
-        _stream.str(""); // 清空流
+        _stream.str(""); 
         return *this;
     }
 

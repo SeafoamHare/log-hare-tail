@@ -14,7 +14,6 @@ void Logger::log()
 {
 
     std::string message = _stream.str();
-    // JSON format for console output
     std::lock_guard<std::mutex> lock(m_mutex);
     setMessageFormatter(std::make_shared<PlainMessageFormatter>());
     std::string json_message = formatMessage();

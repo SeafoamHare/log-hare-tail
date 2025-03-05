@@ -16,7 +16,6 @@ Config_File::Config_File(const std::string &config_file)
     max_files = j["max_files"];
     app_name = j["app_name"];
 
-    // Ensure the log directory exists
     if (!createDirectory(log_directory))
     {
         throw std::runtime_error("Unable to create log directory: " + log_directory + ", error: " + std::strerror(errno));
