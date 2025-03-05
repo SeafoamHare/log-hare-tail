@@ -12,15 +12,14 @@ void Logger::initialize(const std::string &config_file)
 
 void Logger::log()
 {
-
-    std::string message = _stream.str();
     std::lock_guard<std::mutex> lock(m_mutex);
+    _logInfo.message = _stream.str();
     setMessageFormatter(std::make_shared<PlainMessageFormatter>());
-    std::string json_message = formatMessage();
-    std::cout << json_message << std::endl;
-    setMessageFormatter(std::make_shared<JsonMessageFormatter>());
     std::string plain_message = formatMessage();
-    logStoreController->Write(plain_message);
+    std::cout << plain_message << std::endl;
+    setMessageFormatter(std::make_shared<JsonMessageFormatter>());
+    std::string json_message = formatMessage();
+    logStoreController->Write(json_message);
 }
 
 void Logger::setMessageFormatter(std::shared_ptr<MessageFormatter> &&formatter)
