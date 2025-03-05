@@ -2,6 +2,7 @@
 
 std::string JsonMessageFormatter::format(sysInfoModel sysInfo, logInfoModel loginfo)
 {
+    // to do: Remove dependency on JsonMessageFormatter
     // std::ostringstream oss;
     // oss << "{";
     // oss << "\"@timestamp\":\"" << getCurrentTimestamp() << "\",";

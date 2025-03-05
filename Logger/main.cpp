@@ -24,7 +24,6 @@ void workerFunction(int id)
         LOG_CRITICAL() << std::to_string(id) << " This is a error message " << std::to_string(i) << std::endl;
         LOG_DEBUG() << std::to_string(id) << " This is a debug message " << std::to_string(i) << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        // logger.log("Worker " + std::to_string(id) + " - Task " + std::to_string(i));
     }
 }
 int main()
@@ -32,7 +31,6 @@ int main()
     try
     {
         Logger::getInstance().initialize("logger_config.json");
-        // LOG_INFO("Application started");
         LOG_INFO("DEVICE-001") << "Application started" << std::endl;
         std::vector<std::thread> threads;
         const int numThreads = 5;

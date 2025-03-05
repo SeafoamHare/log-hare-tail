@@ -154,7 +154,6 @@ private:
     thread_local static logInfoModel _logInfo;
     sysInfoModel sysInfo_;
     std::unique_ptr<LogStoreController> logStoreController;
-    // void rotate();
 };
 
 #endif // LOGGER_H

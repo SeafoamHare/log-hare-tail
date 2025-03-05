@@ -51,7 +51,6 @@ void LogStoreController::Rotate()
     }
 
     // Rename the current log file
-    // std::string backup_name = "0." + m_full_path;
     std::string backup_name = file_directory_ + "/0." + file_filename_;
     rename(file_full_path_.c_str(), backup_name.c_str());
 

@@ -44,6 +44,5 @@ Logger::~Logger()
 {
 }
 
-// 初始化 thread_local 變量
 thread_local std::ostringstream Logger::_stream;
 thread_local logInfoModel Logger::_logInfo;

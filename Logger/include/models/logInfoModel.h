@@ -18,10 +18,6 @@ public:
     std::string function;
     std::string timestamp;
 
-    // logInfoModel(const std::string &msg, const std::string &dev_id, LogLevel lvl,
-    //              const std::string &fname, int ln)
-    //     : message(msg), device_id(dev_id), level(lvl), file(fname), line(ln), timestamp(getCurrentTimestamp()) {}
-
 private:
     std::string getCurrentTimestamp()
     {
