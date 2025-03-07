@@ -118,13 +118,13 @@ int main() {
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
-  "pod.id":"hare-pod-2"
+  "pod.id":"hare-pod-6c58ffdbb8-f2m6m"
 }
 ```
 
 #### File Output (Plain Text)
 ```
-2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (device: DEVICE-001) (pod.id: device-pod-provider-6c58ffdbb8-f2m6m)
+2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (device: DEVICE-001) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
 ```
 ### Output Format ( Without device id )
 
@@ -138,13 +138,13 @@ int main() {
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
-  "pod.id":"hare-pod-2"
+  "pod.id":"hare-pod-6c58ffdbb8-f2m6m"
 }
 ```
 
 #### File Output (Plain Text)
 ```
-2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (pod.id: device-state-provider-6c58ffdbb8-f2m6m)
+2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
 ```
 ## Log Rotation
 
