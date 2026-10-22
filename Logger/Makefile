@@ -17,12 +17,16 @@ endif
 SRC = $(wildcard $(SRC_DIR)/core/*.cxx) $(wildcard $(SRC_DIR)/formatMessage/*.cxx)
 OBJ = $(SRC:$(SRC_DIR)/%.cxx=$(OBJ_DIR)/%.o) $(OBJ_DIR)/main.o
 
+# Write a .d file next to each object listing the headers it includes, so editing a
+# header rebuilds every object that uses it (included at the bottom of this file)
+DEPFLAGS = -MMD -MP
+
 # Tests: each tests/*.cpp builds into its own executable, because Logger is a
 # singleton with thread_local state that must not leak between test files
 GTEST_DIR = ./third_party/googletest/googletest
 TEST_DIR = ./tests
 TEST_OBJ_DIR = $(OBJ_DIR)/test
-TEST_CXXFLAGS = $(CXXFLAGS) $(SAN_FLAGS) -std=c++17 -MMD -MP
+TEST_CXXFLAGS = $(CXXFLAGS) $(SAN_FLAGS) -std=c++17 $(DEPFLAGS)
 TEST_INCLUDE = $(INCLUDE) -I$(GTEST_DIR)/include -I$(GTEST_DIR)
 TEST_SRC = $(wildcard $(TEST_DIR)/*.cpp)
 TEST_BIN = $(TEST_SRC:$(TEST_DIR)/%.cpp=$(TEST_OBJ_DIR)/bin/%)
@@ -41,11 +45,11 @@ $(OBJ_DIR)/$(OUT): $(OBJ)
 
 $(OBJ_DIR)/main.o: main.cpp
 	@mkdir -p $(OBJ_DIR)
-	$(CXX) -c main.cpp $(INCLUDE) $(CXXFLAGS) -o $(OBJ_DIR)/main.o
+	$(CXX) -c main.cpp $(INCLUDE) $(CXXFLAGS) $(DEPFLAGS) -o $(OBJ_DIR)/main.o
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx
 	@mkdir -p $(dir $@)
-	$(CXX) -c $< $(INCLUDE) $(CXXFLAGS) -o $@
+	$(CXX) -c $< $(INCLUDE) $(CXXFLAGS) $(DEPFLAGS) -o $@
 
 test: $(TEST_BIN)
 	@for t in $(TEST_BIN); do echo "=== $$t ==="; $$t $(GTEST_ARGS) || exit 1; done
@@ -76,10 +80,10 @@ check-gtest:
 		echo "Run: git clone --depth 1 --branch v1.14.0 https://github.com/google/googletest.git third_party/googletest"; \
 		exit 1; }
 
--include $(TEST_CASE_OBJ:.o=.d) $(TEST_LIB_OBJ:.o=.d)
+-include $(OBJ:.o=.d) $(TEST_CASE_OBJ:.o=.d) $(TEST_LIB_OBJ:.o=.d)
 
 clean:
-	rm -rf $(OBJ_DIR)/*.o $(OBJ_DIR)/core/*.o $(OBJ_DIR)/formatMessage/*.o $(OBJ_DIR)/$(OUT) ./log $(OBJ_DIR)/test $(OBJ_DIR)/test-tsan
+	rm -rf $(OBJ_DIR)/*.[od] $(OBJ_DIR)/core/*.[od] $(OBJ_DIR)/formatMessage/*.[od] $(OBJ_DIR)/$(OUT) ./log $(OBJ_DIR)/test $(OBJ_DIR)/test-tsan
 
 run:
 	$(OBJ_DIR)/$(OUT)
