@@ -11,7 +11,7 @@ private:
     std::string file_directory_;
     std::string file_filename_;
     std::string file_full_path_;
-    int file_max_size_;
+    size_t file_max_size_; // same type as Config_File::max_size, so large limits are not truncated
     int file_max_create_count_;
     void Rotate();
 
