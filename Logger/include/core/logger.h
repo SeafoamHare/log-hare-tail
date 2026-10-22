@@ -136,7 +136,6 @@ public:
     Logger &operator<<(std::ostream &(*endl)(std::ostream &))
     {
         log();
-        _stream.str(""); 
         return *this;
     }
 

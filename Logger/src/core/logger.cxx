@@ -14,6 +14,9 @@ void Logger::log()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     _logInfo.message = _stream.str();
+    // _stream is thread_local and lives as long as the thread, so reset it for the next message
+    _stream.str("");
+    _stream.clear();
     setMessageFormatter(std::make_shared<PlainMessageFormatter>());
     std::string plain_message = formatMessage();
     std::cout << plain_message << std::endl;
