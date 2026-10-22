@@ -7,7 +7,7 @@
 class PlainMessageFormatter : public MessageFormatter
 {
 public:
-    std::string format(sysInfoModel sysInfo, logInfoModel loginfo) override;
+    std::string format(const sysInfoModel &sysInfo, const logInfoModel &loginfo) override;
 };
 
 #endif // PLAINMESSAGEFORMATTER_H

@@ -18,7 +18,7 @@ A thread-safe, feature-rich logging system for C++ applications with JSON consol
 - **Automatic Log Rotation**
   - Size-based rotation
   - Configurable maximum file size
-  - Configurable number of backup files
+  - Configurable total number of log files
   - Automatic file management
 
 - **Thread Safety**
@@ -35,14 +35,34 @@ A thread-safe, feature-rich logging system for C++ applications with JSON consol
   - Source file and line number
   - Function name
   - Application name
+  - Device ID (optional)
+  - Pod ID (the hostname, which is the pod name when running in Kubernetes)
 
 ## Requirements
 - C++11 or higher (for thread_local support and other modern C++ features)
 - nlohmann/json library
 
 ```
+# Ubuntu / Debian
 $ sudo apt-get update
 $ sudo apt-get install nlohmann-json3-dev
+
+# macOS
+$ brew install nlohmann-json
+```
+
+## Build & Run
+
+```
+$ cd Logger
+$ make        # builds obj/logimp from main.cpp and src/
+$ make run    # runs the demo with logger_config.json
+```
+
+Or build inside Docker:
+
+```
+$ docker build -t log-hare-tail .
 ```
 
 ## Configuration
@@ -54,9 +74,11 @@ Create a `config.json` file with the following structure:
     "filename": "app.log",
     "max_size": 10485760,
     "max_files": 5,
-    "app_name": "MyApplication",
+    "app_name": "MyApplication"
 }
 ```
+
+The log directory is created automatically if it does not exist.
 
 ### Configuration Parameters
 
@@ -64,8 +86,8 @@ Create a `config.json` file with the following structure:
 |-----------|------|----------|-------------|
 | log_directory | string | Yes | Directory where log files will be stored |
 | filename | string | Yes | Name of the log file |
-| max_size | number | Yes | Maximum size of each log file in bytes |
-| max_files | number | Yes | Maximum number of backup files to keep |
+| max_size | number | Yes | Size in bytes at which the current log file is rotated |
+| max_files | number | Yes | Total number of log files to keep, including the current one (`max_files - 1` backups) |
 | app_name | string | Yes | Name of the application |
 
 
@@ -82,8 +104,10 @@ LOG_INFO() << "Application started" << std::endl;
 ```
 ### Basic Usage
 
+Include the header (compile with `-I Logger/include` and link the sources under `Logger/src/`):
+
 ```cpp
-#include "/Logger/src/logger.cxx"
+#include "core/logger.h"
 
 int main() {
     try {
@@ -109,6 +133,28 @@ int main() {
 ### Output Format ( With device id )
 
 #### Console Output (JSON)
+Each entry is written as a single line (shown pretty-printed here for readability):
+```json
+{
+  "@timestamp":"2024-11-08 18:00:27.884",
+  "app.name":"MyApplication",
+  "device.id":"DEVICE-001",
+  "file":"main.cpp",
+  "line":36,
+  "log.level":"INFO",
+  "log.logger":"main",
+  "message.context":"Application started",
+  "pod.id":"hare-pod-6c58ffdbb8-f2m6m"
+}
+```
+
+#### File Output (Plain Text)
+```
+2024-11-08 18:00:27.884 [INFO] [main] Application started (file: main.cpp, line: 36) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m) (device: DEVICE-001)
+```
+### Output Format ( Without device id )
+
+#### Console Output (JSON)
 ```json
 {
   "@timestamp":"2024-11-08 18:00:27.884",
@@ -124,42 +170,23 @@ int main() {
 
 #### File Output (Plain Text)
 ```
-2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (device: DEVICE-001) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
-```
-### Output Format ( Without device id )
-
-#### Console Output (JSON)
-```json
-{
-  "@timestamp":"2024-10-30T14:30:45.123",
-  "app.name":"MyApplication",
-  "file":"main.cpp",
-  "line":36,
-  "log.level":"INFO",
-  "log.logger":"main",
-  "message.context":"Application started",
-  "pod.id":"hare-pod-6c58ffdbb8-f2m6m"
-}
-```
-
-#### File Output (Plain Text)
-```
-2024-10-30T14:30:45.123 [INFO] [main] Application started (file: main.cpp, line: 10) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
+2024-11-08 18:00:27.884 [INFO] [main] Application started (file: main.cpp, line: 36) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
 ```
 ## Log Rotation
 
-The logger automatically rotates log files when they reach the configured maximum size. The rotation process:
+After each write, the logger checks the size of the current log file. Once it reaches `max_size`, the file is rotated:
 
-1. Renames existing backup files by incrementing their number
-2. Moves the current log file to .1
+1. Renames existing backup files by incrementing their number (the oldest backup is overwritten)
+2. Moves the current log file to `0.<filename>`
 3. Creates a new log file
 
-Example of rotated files:
+Example of rotated files with `max_files` set to 5:
 ```
 app.log      # Current log file
-1.app.log    # Most recent backup
-2.app.log    # Second most recent backup
-3.app.log    # Third most recent backup
+0.app.log    # Most recent backup
+1.app.log    # Second most recent backup
+2.app.log    # Third most recent backup
+3.app.log    # Oldest backup
 ```
 
 <!-- ## Directory Structure

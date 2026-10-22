@@ -9,7 +9,7 @@ using json = nlohmann::json;
 class JsonMessageFormatter : public MessageFormatter
 {
 public:
-    std::string format(sysInfoModel sysInfo, logInfoModel loginfo) override;
+    std::string format(const sysInfoModel &sysInfo, const logInfoModel &loginfo) override;
 };
 
 #endif // JSONMESSAGEFORMATTER_H

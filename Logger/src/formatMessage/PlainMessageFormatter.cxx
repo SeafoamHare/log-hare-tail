@@ -1,6 +1,6 @@
 #include "formatMessage/PlainMessageFormatter.h"
 
-std::string PlainMessageFormatter::format(sysInfoModel sysInfo, logInfoModel loginfo)
+std::string PlainMessageFormatter::format(const sysInfoModel &sysInfo, const logInfoModel &loginfo)
 {
     std::ostringstream oss;
     oss << getCurrentTimestamp() << " ";
