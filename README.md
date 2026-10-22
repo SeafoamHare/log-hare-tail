@@ -1,5 +1,7 @@
 # C++ Logger System
 
+[![CI](https://github.com/SeafoamHare/log-hare-tail/actions/workflows/ci.yml/badge.svg)](https://github.com/SeafoamHare/log-hare-tail/actions/workflows/ci.yml)
+
 A thread-safe, feature-rich logging system for C++ applications with JSON console output and plain text file output capabilities.
 
 ## Features
@@ -59,11 +61,45 @@ $ make        # builds obj/logimp from main.cpp and src/
 $ make run    # runs the demo with logger_config.json
 ```
 
-Or build inside Docker:
+Or build and run inside Docker:
 
 ```
 $ docker build -t log-hare-tail .
+$ docker run --rm log-hare-tail
 ```
+
+## Testing
+
+Tests use [GoogleTest](https://github.com/google/googletest), cloned into `Logger/third_party/`:
+
+```
+$ cd Logger
+$ git clone --depth 1 --branch v1.14.0 https://github.com/google/googletest.git third_party/googletest
+$ make test        # unit tests
+$ make test-tsan   # with ThreadSanitizer (data races)
+$ make test-asan   # with AddressSanitizer + UndefinedBehaviorSanitizer
+```
+
+Pass `WERROR=1` to turn compiler warnings into errors, and `CXX=clang++` to switch compilers.
+
+### Running the CI checks locally
+
+CI runs every check inside the `dev` stage of the Dockerfile, with the checkout mounted in.
+The same commands reproduce a CI failure on your machine:
+
+```
+$ docker build --target dev -t log-hare-tail:dev .
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev make test CXX=g++ WERROR=1
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev make test-asan CXX=clang++
+```
+
+| CI job | What it checks |
+|---|---|
+| `docker build` | Every Dockerfile stage builds, and the project compiles on Linux |
+| `linux / gcc`, `linux / clang` | Unit tests pass, with warnings treated as errors |
+| `linux / tsan` | No data races under ThreadSanitizer |
+| `linux / asan` | No memory errors, leaks, or undefined behavior under ASan + UBSan |
+| `macos / clang` | Builds and passes tests natively on macOS |
 
 ## Configuration
 Create a `config.json` file with the following structure:
