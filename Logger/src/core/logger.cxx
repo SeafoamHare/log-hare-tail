@@ -27,8 +27,7 @@ void Logger::log()
     _stream.str("");
     _stream.clear();
     // JSON format for console output
-    setMessageFormatter(std::make_shared<JsonMessageFormatter>());
-    std::string json_message = formatMessage();
+    std::string json_message = console_formatter_->format(sysInfo_, _logInfo);
     std::cout << json_message << std::endl;
 
     // Like glog, logging before initialize() degrades to console only instead of crashing,
@@ -44,26 +43,8 @@ void Logger::log()
     }
 
     // Plain text format for file output
-    setMessageFormatter(std::make_shared<PlainMessageFormatter>());
-    std::string plain_message = formatMessage();
+    std::string plain_message = file_formatter_->format(sysInfo_, _logInfo);
     logStoreController->Write(plain_message);
-}
-
-void Logger::setMessageFormatter(std::shared_ptr<MessageFormatter> &&formatter)
-{
-    this->_formatter = std::move(formatter);
-}
-
-std::string Logger::formatMessage() const
-{
-    if (_formatter)
-    {
-        return _formatter->format(sysInfo_, _logInfo);
-    }
-    else
-    {
-        return "No formatter set!";
-    }
 }
 
 Logger::~Logger()

@@ -143,11 +143,11 @@ private:
     Logger() = default;
     ~Logger();
     void log();
-    void setMessageFormatter(std::shared_ptr<MessageFormatter> &&formate);
-    std::string formatMessage() const;
 
     std::unique_ptr<Config_File> m_config;
-    std::shared_ptr<MessageFormatter> _formatter;
+    // Formatters are stateless, so each output keeps one for the Logger's whole lifetime
+    std::unique_ptr<MessageFormatter> console_formatter_ = std::make_unique<JsonMessageFormatter>();
+    std::unique_ptr<MessageFormatter> file_formatter_ = std::make_unique<PlainMessageFormatter>();
     std::mutex m_mutex;
     thread_local static std::ostringstream _stream;
     thread_local static logInfoModel _logInfo;

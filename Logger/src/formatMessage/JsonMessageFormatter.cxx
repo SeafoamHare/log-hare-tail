@@ -1,6 +1,6 @@
 #include "formatMessage/JsonMessageFormatter.h"
 
-std::string JsonMessageFormatter::format(sysInfoModel sysInfo, logInfoModel loginfo)
+std::string JsonMessageFormatter::format(const sysInfoModel &sysInfo, const logInfoModel &loginfo)
 {
     // to do: Remove dependency on JsonMessageFormatter
     // std::ostringstream oss;

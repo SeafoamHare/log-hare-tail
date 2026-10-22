@@ -8,7 +8,7 @@ class MessageFormatter
 {
 public:
     virtual ~MessageFormatter() = default;
-    virtual std::string format(sysInfoModel sysInfo, logInfoModel loginfo) = 0; 
+    virtual std::string format(const sysInfoModel &sysInfo, const logInfoModel &loginfo) = 0; 
     std::string getCurrentTimestamp()
     {
         auto now = std::chrono::system_clock::now();
