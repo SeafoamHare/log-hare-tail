@@ -11,8 +11,8 @@ private:
     std::string file_directory_;
     std::string file_filename_;
     std::string file_full_path_;
-    int file_max_size_;
-    int file_max_create_count_;
+    decltype(Config_File::max_size) file_max_size_;
+    decltype(Config_File::max_files) file_max_create_count_;
     void Rotate();
 
 public:

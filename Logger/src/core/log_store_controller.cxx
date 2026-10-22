@@ -50,9 +50,16 @@ void LogStoreController::Rotate()
         rename(old_name.c_str(), new_name.c_str());
     }
 
-    // Rename the current log file
-    std::string backup_name = file_directory_ + "/0." + file_filename_;
-    rename(file_full_path_.c_str(), backup_name.c_str());
+    // Rename the current log file, or drop it when max_files is 1 (no backups)
+    if (file_max_create_count_ > 1)
+    {
+        std::string backup_name = file_directory_ + "/0." + file_filename_;
+        rename(file_full_path_.c_str(), backup_name.c_str());
+    }
+    else
+    {
+        remove(file_full_path_.c_str());
+    }
 
     // Open a new log file
     file_.open(file_full_path_, std::ios::app);

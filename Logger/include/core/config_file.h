@@ -15,13 +15,11 @@ class Config_File
 {
 public:
   explicit Config_File(const std::string &config_file);
-
-  // Configuration file related properties
-  std::string filename;      // Name of the log file
-  size_t max_size;           // Maximum size of each log file in bytes
-  int max_files;             // Maximum number of backup files to keep
-  std::string app_name;      // Name of the application
-  std::string log_directory; // Directory where log files will be stored
+  std::string filename;
+  size_t max_size;
+  int max_files;
+  std::string app_name;      
+  std::string log_directory; 
 
 private:
   bool createDirectory(const std::string &path);

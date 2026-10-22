@@ -1,4 +1,19 @@
 #include "core/config_file.h"
+#include <cstdint>
+#include <limits>
+
+// Reads an integer field that must be between 1 and max. A missing field, 0, a negative
+// number, a fraction or a string is rejected with a message naming the field, instead of
+// wrapping around when converted to an unsigned type
+static std::uint64_t readPositiveInteger(const json &j, const std::string &key, std::uint64_t max)
+{
+    if (!j.contains(key) || !j.at(key).is_number_unsigned() ||
+        j.at(key).get<std::uint64_t>() == 0 || j.at(key).get<std::uint64_t>() > max)
+    {
+        throw std::runtime_error("Invalid config: \"" + key + "\" must be an integer between 1 and " + std::to_string(max));
+    }
+    return j.at(key).get<std::uint64_t>();
+}
 
 Config_File::Config_File(const std::string &config_file)
 {
@@ -12,8 +27,12 @@ Config_File::Config_File(const std::string &config_file)
     file >> j;
     log_directory = j["log_directory"];
     filename = j["filename"];
-    max_size = j["max_size"];
-    max_files = j["max_files"];
+    // The upper bound comes from each field's type, so changing the type in config_file.h
+    // cannot leave a bound here that lets larger values through and truncates them
+    max_size = static_cast<decltype(max_size)>(
+        readPositiveInteger(j, "max_size", std::numeric_limits<decltype(max_size)>::max()));
+    max_files = static_cast<decltype(max_files)>(
+        readPositiveInteger(j, "max_files", std::numeric_limits<decltype(max_files)>::max()));
     app_name = j["app_name"];
 
     if (!createDirectory(log_directory))
