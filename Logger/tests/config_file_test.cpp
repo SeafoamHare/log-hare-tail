@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #include <fstream>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <unistd.h>
@@ -65,6 +66,50 @@ TEST_F(ConfigFileTest, AcceptsMinimumValues)
     Config_File loaded(config_file_.string());
     EXPECT_EQ(loaded.max_size, 1u);
     EXPECT_EQ(loaded.max_files, 1);
+}
+
+// Purpose:  the largest value of each field's type is still accepted, so the upper bound
+//           follows the type and is not off by one
+// Input:    max_size = numeric_limits<decltype(max_size)>::max() (SIZE_MAX),
+//           max_files = numeric_limits<decltype(max_files)>::max() (INT_MAX)
+// Expected: the config loads and keeps both values
+TEST_F(ConfigFileTest, AcceptsMaximumValuesOfFieldTypes)
+{
+    const auto max_size = std::numeric_limits<decltype(Config_File::max_size)>::max();
+    const auto max_files = std::numeric_limits<decltype(Config_File::max_files)>::max();
+    nlohmann::json config = validConfig();
+    config["max_size"] = max_size;
+    config["max_files"] = max_files;
+    writeConfig(config);
+
+    Config_File loaded(config_file_.string());
+    EXPECT_EQ(loaded.max_size, max_size);
+    EXPECT_EQ(loaded.max_files, max_files);
+}
+
+// Purpose:  an integer too large even for uint64_t is rejected. nlohmann::json stores it as
+//           a double (1.8446744073709552e+19), and converting an out-of-range double to an
+//           integer is undefined behavior, so the check must reject it before converting
+// Input:    the raw JSON text "max_size": 18446744073709551616 (UINT64_MAX + 1), written as
+//           text because no C++ integer type can hold it
+// Expected: std::runtime_error whose message names "max_size"
+TEST_F(ConfigFileTest, RejectsMaxSizeAboveUint64Max)
+{
+    std::string text = validConfig().dump();
+    const std::string original = "\"max_size\":1024";
+    ASSERT_NE(text.find(original), std::string::npos) << text;
+    text.replace(text.find(original), original.size(), "\"max_size\":18446744073709551616");
+    std::ofstream(config_file_) << text;
+
+    try
+    {
+        Config_File loaded(config_file_.string());
+        FAIL() << "expected std::runtime_error, but max_size loaded as " << loaded.max_size;
+    }
+    catch (const std::runtime_error &e)
+    {
+        EXPECT_NE(std::string(e.what()).find("\"max_size\""), std::string::npos) << e.what();
+    }
 }
 
 struct InvalidField

@@ -1,6 +1,6 @@
 #include "core/config_file.h"
-#include <climits>
 #include <cstdint>
+#include <limits>
 
 // Reads an integer field that must be between 1 and max. A missing field, 0, a negative
 // number, a fraction or a string is rejected with a message naming the field, instead of
@@ -27,8 +27,12 @@ Config_File::Config_File(const std::string &config_file)
     file >> j;
     log_directory = j["log_directory"];
     filename = j["filename"];
-    max_size = static_cast<size_t>(readPositiveInteger(j, "max_size", SIZE_MAX));
-    max_files = static_cast<int>(readPositiveInteger(j, "max_files", INT_MAX));
+    // The upper bound comes from each field's type, so changing the type in config_file.h
+    // cannot leave a bound here that lets larger values through and truncates them
+    max_size = static_cast<decltype(max_size)>(
+        readPositiveInteger(j, "max_size", std::numeric_limits<decltype(max_size)>::max()));
+    max_files = static_cast<decltype(max_files)>(
+        readPositiveInteger(j, "max_files", std::numeric_limits<decltype(max_files)>::max()));
     app_name = j["app_name"];
 
     if (!createDirectory(log_directory))
