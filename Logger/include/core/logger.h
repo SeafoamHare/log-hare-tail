@@ -153,7 +153,7 @@ private:
     thread_local static logInfoModel _logInfo;
     sysInfoModel sysInfo_;
     std::unique_ptr<LogStoreController> logStoreController;
-    bool warned_uninitialized_ = false; // guarded by m_mutex
+    bool warned_uninitialized_ = false;
 };
 
 #endif // LOGGER_H
