@@ -17,12 +17,14 @@ void Logger::log()
     // _stream is thread_local and lives as long as the thread, so reset it for the next message
     _stream.str("");
     _stream.clear();
-    setMessageFormatter(std::make_shared<PlainMessageFormatter>());
-    std::string plain_message = formatMessage();
-    std::cout << plain_message << std::endl;
+    // JSON format for console output
     setMessageFormatter(std::make_shared<JsonMessageFormatter>());
     std::string json_message = formatMessage();
-    logStoreController->Write(json_message);
+    std::cout << json_message << std::endl;
+    // Plain text format for file output
+    setMessageFormatter(std::make_shared<PlainMessageFormatter>());
+    std::string plain_message = formatMessage();
+    logStoreController->Write(plain_message);
 }
 
 void Logger::setMessageFormatter(std::shared_ptr<MessageFormatter> &&formatter)
