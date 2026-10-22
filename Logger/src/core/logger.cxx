@@ -1,8 +1,17 @@
 #include "core/logger.h"
+#include <stdexcept>
 
 void Logger::initialize(const std::string &config_file)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+
+    // Same as glog's "You called InitGoogleLogging() twice!": a second call would silently
+    // swap the log file under running threads, so treat it as a programming error.
+    // logStoreController is only set once everything below succeeded, so a failed call can be retried
+    if (logStoreController)
+    {
+        throw std::logic_error("Logger::initialize() called twice");
+    }
 
     m_config = std::make_unique<Config_File>(config_file);
     logStoreController = std::make_unique<LogStoreController>(*m_config);
@@ -21,6 +30,19 @@ void Logger::log()
     setMessageFormatter(std::make_shared<JsonMessageFormatter>());
     std::string json_message = formatMessage();
     std::cout << json_message << std::endl;
+
+    // Like glog, logging before initialize() degrades to console only instead of crashing,
+    // and warns once on stderr so the missing call is still noticed
+    if (!logStoreController)
+    {
+        if (!warned_uninitialized_)
+        {
+            std::cerr << "WARNING: Logging before Logger::initialize() is written to console only" << std::endl;
+            warned_uninitialized_ = true;
+        }
+        return;
+    }
+
     // Plain text format for file output
     setMessageFormatter(std::make_shared<PlainMessageFormatter>());
     std::string plain_message = formatMessage();
