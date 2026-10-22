@@ -86,8 +86,10 @@ The log directory is created automatically if it does not exist.
 |-----------|------|----------|-------------|
 | log_directory | string | Yes | Directory where log files will be stored |
 | filename | string | Yes | Name of the log file |
-| max_size | number | Yes | Size in bytes at which the current log file is rotated |
-| max_files | number | Yes | Total number of log files to keep, including the current one (`max_files - 1` backups) |
+| max_size | integer ≥ 1 | Yes | Size in bytes at which the current log file is rotated |
+| max_files | integer ≥ 1 | Yes | Total number of log files to keep, including the current one (`max_files - 1` backups; `1` keeps no backup) |
+
+A missing or out-of-range `max_size` or `max_files` makes `initialize()` throw `std::runtime_error` naming the field.
 | app_name | string | Yes | Name of the application |
 
 
@@ -177,7 +179,7 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 After each write, the logger checks the size of the current log file. Once it reaches `max_size`, the file is rotated:
 
 1. Renames existing backup files by incrementing their number (the oldest backup is overwritten)
-2. Moves the current log file to `0.<filename>`
+2. Moves the current log file to `0.<filename>` (with `max_files` set to 1, the current file is deleted instead)
 3. Creates a new log file
 
 Example of rotated files with `max_files` set to 5:

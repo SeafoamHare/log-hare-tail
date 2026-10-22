@@ -122,3 +122,20 @@ TEST_F(LogStoreControllerTest, KeepsAtMostMaxFiles)
     EXPECT_EQ(readFile("1.test.log"), "d\n");
     EXPECT_FALSE(fs::exists(logPath("2.test.log")));
 }
+
+// Purpose:  max_files = 1 means only the current file is kept, so rotation drops it
+//           instead of moving it to 0.test.log
+// Input:    max_files = 1, max_size = 1 so every write rotates, then writes "a" and "b"
+// Expected: test.log is empty after each rotation and 0.test.log is never created
+TEST_F(LogStoreControllerTest, MaxFilesOneKeepsNoBackup)
+{
+    {
+        Config_File config = makeConfig(1, 1);
+        LogStoreController store(config);
+        store.Write("a");
+        store.Write("b");
+    }
+
+    EXPECT_EQ(readFile("test.log"), "");
+    EXPECT_FALSE(fs::exists(logPath("0.test.log")));
+}

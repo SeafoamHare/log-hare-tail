@@ -18,8 +18,8 @@ public:
 
   // Configuration file related properties
   std::string filename;      // Name of the log file
-  size_t max_size;           // Maximum size of each log file in bytes
-  int max_files;             // Maximum number of backup files to keep
+  size_t max_size;           // Size in bytes at which the current log file is rotated, at least 1
+  int max_files;             // Total number of log files including the current one, at least 1
   std::string app_name;      // Name of the application
   std::string log_directory; // Directory where log files will be stored
 
