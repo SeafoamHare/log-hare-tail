@@ -133,7 +133,7 @@ public:
         return *this;
     }
 
-    Logger &operator<<(std::ostream &(*endl)(std::ostream &))
+    Logger &operator<<(std::ostream &(*)(std::ostream &))
     {
         log();
         return *this;
