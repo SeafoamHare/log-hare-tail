@@ -83,6 +83,7 @@ CTest runs every test case in its own process, in parallel.
 | `tsan` | Unit tests under ThreadSanitizer (data races) |
 | `asan` | Unit tests under AddressSanitizer + UndefinedBehaviorSanitizer |
 | `tidy` | Builds the library and demo with [clang-tidy](Logger/.clang-tidy); any finding fails the build |
+| `coverage` | Unit tests built with `--coverage`, used by `scripts/coverage.sh` |
 | `release` | Optimized demo build without tests (used by the Docker image) |
 
 ```
@@ -90,6 +91,20 @@ $ cd Logger
 $ cmake --workflow --preset asan                       # configure + build + test in one step
 $ ctest --preset dev -R LoggerStreamTest               # rerun only the tests matching a name
 ```
+
+### Coverage
+
+`scripts/coverage.sh` runs the tests with coverage and reports how much of the library
+(`src/` and `include/`) they execute. It fails when line coverage drops below 85%.
+It needs gcc and gcovr, so run it in the dev image:
+
+```
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/coverage.sh
+$ open Logger/build/Linux/coverage/report/index.html      # per-line HTML report
+```
+
+In CI, the `linux / coverage` job shows the per-file table in the run summary and uploads
+the HTML report as the `coverage-report` artifact.
 
 ### Code style
 
@@ -127,6 +142,7 @@ Linux builds land in `build/Linux/`, so they never mix with builds made on a mac
 | `linux / asan` | No memory errors, leaks, or undefined behavior under ASan + UBSan |
 | `linux / format` | Every source file matches `.clang-format` |
 | `linux / tidy` | No clang-tidy findings (bug patterns, static analyzer, performance, modernization) |
+| `linux / coverage` | Line coverage of the library stays at or above 85%; HTML report as an artifact |
 | `macos / clang` | Builds and passes tests natively on macOS |
 
 ## Configuration
