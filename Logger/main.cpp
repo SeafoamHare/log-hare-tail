@@ -1,6 +1,6 @@
-#include <errno.h>
 #include <sys/stat.h>
 
+#include <cerrno>
 #include <cstring>
 #include <ctime>
 #include <fstream>
@@ -35,6 +35,7 @@ int main()
         LOG_INFO("DEVICE-001") << "Application started" << std::endl;
         std::vector<std::thread> threads;
         const int numThreads = 5;
+        threads.reserve(numThreads);
 
         for (int i = 0; i < numThreads; ++i)
         {

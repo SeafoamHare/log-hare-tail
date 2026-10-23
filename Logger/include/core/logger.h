@@ -2,6 +2,7 @@
 #define LOGGER_H
 
 #include <mutex>
+#include <utility>
 
 #include "LogLevel.h"
 #include "config_file.h"
@@ -32,7 +33,8 @@ make_unique(size_t size)
 }
 
 template <typename T, typename... Args>
-typename std::enable_if<std::extent<T>::value != 0, void>::type make_unique(Args &&...) = delete;
+typename std::enable_if<std::extent<T>::value != 0, void>::type
+make_unique(Args &&...) = delete; // NOLINT(cppcoreguidelines-missing-std-forward): deleted, so there is no body
 } // namespace std
 #endif
 #define LOG_DEBUG(device_id)                                                                                   \
@@ -86,8 +88,8 @@ public:
     struct DeviceId
     {
         std::string value;
-        DeviceId() : value("") {}
-        explicit DeviceId(const std::string &id) : value(id) {}
+        DeviceId() = default;
+        explicit DeviceId(std::string id) : value(std::move(id)) {}
     };
 
     template <typename T> Logger &operator<<(const T &value)
@@ -120,13 +122,13 @@ public:
         return *this;
     }
 
-    Logger &operator<<(DeviceId d_id)
+    Logger &operator<<(const DeviceId &d_id)
     {
         _logInfo.device_id = d_id.value;
         return *this;
     }
 
-    Logger &operator<<(std::ostream &(*)(std::ostream &))
+    Logger &operator<<(std::ostream &(* /*endl*/)(std::ostream &))
     {
         log();
         return *this;
@@ -134,7 +136,7 @@ public:
 
 private:
     Logger() = default;
-    ~Logger();
+    ~Logger() = default;
     void log();
 
     std::unique_ptr<Config_File> m_config;

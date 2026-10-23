@@ -6,7 +6,9 @@
 // Reads an integer field that must be between 1 and max. A missing field, 0, a negative
 // number, a fraction or a string is rejected with a message naming the field, instead of
 // wrapping around when converted to an unsigned type
-static std::uint64_t readPositiveInteger(const json &j, const std::string &key, std::uint64_t max)
+namespace
+{
+std::uint64_t readPositiveInteger(const json &j, const std::string &key, std::uint64_t max)
 {
     if (!j.contains(key) || !j.at(key).is_number_unsigned() || j.at(key).get<std::uint64_t>() == 0 ||
         j.at(key).get<std::uint64_t>() > max)
@@ -16,6 +18,7 @@ static std::uint64_t readPositiveInteger(const json &j, const std::string &key, 
     }
     return j.at(key).get<std::uint64_t>();
 }
+} // namespace
 
 Config_File::Config_File(const std::string &config_file)
 {

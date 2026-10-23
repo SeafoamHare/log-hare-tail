@@ -1,5 +1,9 @@
 #ifndef MESSAGEFORMATTER_H
 #define MESSAGEFORMATTER_H
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 #include "models/logInfoModel.h"
@@ -10,7 +14,7 @@ class MessageFormatter
 public:
     virtual ~MessageFormatter() = default;
     virtual std::string format(const sysInfoModel &sysInfo, const logInfoModel &loginfo) = 0;
-    std::string getCurrentTimestamp()
+    static std::string getCurrentTimestamp()
     {
         auto now = std::chrono::system_clock::now();
 

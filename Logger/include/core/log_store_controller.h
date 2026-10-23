@@ -19,6 +19,9 @@ private:
 public:
     LogStoreController(Config_File &config);
     ~LogStoreController();
+    // Owns an open file, so copying would leave two objects writing and rotating the same file
+    LogStoreController(const LogStoreController &) = delete;
+    LogStoreController &operator=(const LogStoreController &) = delete;
     bool IsOpen();
     void Write(const std::string &logmsg);
 };

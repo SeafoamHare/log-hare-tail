@@ -2,9 +2,10 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include <cstdint>
 #include <string>
 
-enum class LogLevel
+enum class LogLevel : std::uint8_t
 {
     DEBUG,
     INFO,

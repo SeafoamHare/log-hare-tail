@@ -41,9 +41,5 @@ void Logger::log()
     logStoreController->Write(plain_message);
 }
 
-Logger::~Logger()
-{
-}
-
 thread_local std::ostringstream Logger::_stream;
 thread_local logInfoModel Logger::_logInfo;

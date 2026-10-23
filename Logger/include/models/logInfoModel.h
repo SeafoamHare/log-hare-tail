@@ -1,10 +1,6 @@
 #ifndef LOGINFOMODEL_H
 #define LOGINFOMODEL_H
 
-#include <chrono>
-#include <ctime>
-#include <iomanip>
-#include <sstream>
 #include <string>
 
 #include "../core/LogLevel.h"
@@ -13,29 +9,10 @@ struct logInfoModel
 public:
     std::string message;
     std::string device_id;
-    LogLevel level;
+    LogLevel level = LogLevel::INFO;
     std::string file;
-    int line;
+    int line = 0;
     std::string function;
-    std::string timestamp;
-
-private:
-    std::string getCurrentTimestamp()
-    {
-        auto now = std::chrono::system_clock::now();
-
-        auto now_time_t = std::chrono::system_clock::to_time_t(now);
-
-        std::tm now_tm = *std::localtime(&now_time_t);
-
-        std::stringstream ss;
-        ss << std::put_time(&now_tm, "%Y-%m-%d %H:%M:%S");
-
-        auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-        ss << "." << std::setfill('0') << std::setw(3) << now_ms.count();
-
-        return ss.str();
-    }
 };
 
 #endif // LOGINFOMODEL_H

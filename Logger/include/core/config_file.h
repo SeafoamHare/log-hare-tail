@@ -24,7 +24,7 @@ public:
     std::string log_directory;
 
 private:
-    bool createDirectory(const std::string &path);
+    static bool createDirectory(const std::string &path);
 };
 
 #endif // CONFIG_FILE_H
