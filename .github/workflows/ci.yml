@@ -39,11 +39,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { check: gcc, cmd: "make test CXX=g++ WERROR=1" }
-          - { check: clang, cmd: "make test CXX=clang++ WERROR=1" }
+          - { check: gcc, cmd: "cmake --workflow --preset gcc" }
+          - { check: clang, cmd: "cmake --workflow --preset clang" }
           # TSan and ASan runtimes cannot share one binary, so each gets its own job
-          - { check: tsan, cmd: "make test-tsan CXX=clang++" }
-          - { check: asan, cmd: "make test-asan CXX=clang++" }
+          - { check: tsan, cmd: "cmake --workflow --preset tsan" }
+          - { check: asan, cmd: "cmake --workflow --preset asan" }
     steps:
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
@@ -62,7 +62,7 @@ jobs:
       - name: Run ${{ matrix.check }}
         run: docker run --rm -v "$PWD:/workspace" log-hare-tail:dev ${{ matrix.cmd }}
 
-  # Native, outside Docker, to keep the macOS-specific Makefile branch covered
+  # Native, outside Docker, to keep macOS (Apple clang, libc++, Homebrew packages) covered
   macos:
     name: macos / clang
     runs-on: macos-15
@@ -73,10 +73,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install dependencies
-        run: brew install nlohmann-json
-      - name: Fetch googletest
-        run: git clone --depth 1 --branch v1.14.0 https://github.com/google/googletest.git third_party/googletest
-      - name: Build
-        run: make CXX=clang++ WERROR=1
-      - name: Test
-        run: make test CXX=clang++ WERROR=1
+        run: brew install ninja nlohmann-json
+      - name: Build and test
+        run: cmake --workflow --preset clang

@@ -1,5 +1,4 @@
 #include "core/log_store_controller.h"
-#include <filesystem>
 
 LogStoreController::LogStoreController(Config_File &config)
 {
