@@ -1,10 +1,13 @@
-#include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
+#include <unistd.h>
+
 #include <filesystem>
 #include <fstream>
 #include <stdexcept>
 #include <string>
-#include <unistd.h>
+
+#include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
+
 #include "core/logger.h"
 
 namespace fs = std::filesystem;
@@ -24,12 +27,11 @@ protected:
         fs::remove_all(log_dir_);
         config_file_ = fs::temp_directory_path() / (tag + ".json");
 
-        nlohmann::json config = {
-            {"log_directory", log_dir_.string()},
-            {"filename", "test.log"},
-            {"max_size", 10 * 1024 * 1024},
-            {"max_files", 2},
-            {"app_name", "LoggerInitializeTest"}};
+        nlohmann::json config = {{"log_directory", log_dir_.string()},
+                                 {"filename", "test.log"},
+                                 {"max_size", 10 * 1024 * 1024},
+                                 {"max_files", 2},
+                                 {"app_name", "LoggerInitializeTest"}};
         std::ofstream(config_file_) << config.dump();
     }
 

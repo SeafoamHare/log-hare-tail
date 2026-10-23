@@ -1,12 +1,13 @@
 #ifndef LOGINFOMODEL_H
 #define LOGINFOMODEL_H
 
-#include <string>
 #include <chrono>
 #include <ctime>
-#include <sstream>
-#include "../core/LogLevel.h"
 #include <iomanip>
+#include <sstream>
+#include <string>
+
+#include "../core/LogLevel.h"
 struct logInfoModel
 {
 public:
@@ -30,9 +31,7 @@ private:
         std::stringstream ss;
         ss << std::put_time(&now_tm, "%Y-%m-%d %H:%M:%S");
 
-        auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                          now.time_since_epoch()) %
-                      1000;
+        auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
         ss << "." << std::setfill('0') << std::setw(3) << now_ms.count();
 
         return ss.str();

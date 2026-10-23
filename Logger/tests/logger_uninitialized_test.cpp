@@ -1,8 +1,10 @@
-#include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
+
 #include "core/logger.h"
 
 // This file never calls Logger::initialize(). Logger is a singleton, so this must stay

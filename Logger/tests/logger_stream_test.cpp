@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
+#include <unistd.h>
+
 #include <filesystem>
 #include <fstream>
 #include <regex>
@@ -7,7 +7,10 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <unistd.h>
+
+#include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
+
 #include "core/logger.h"
 
 namespace fs = std::filesystem;
@@ -27,12 +30,11 @@ protected:
         log_file_ = log_dir_ / "test.log";
 
         // max_size is large so rotation never splits the records under test
-        nlohmann::json config = {
-            {"log_directory", log_dir_.string()},
-            {"filename", "test.log"},
-            {"max_size", 10 * 1024 * 1024},
-            {"max_files", 2},
-            {"app_name", "LoggerStreamTest"}};
+        nlohmann::json config = {{"log_directory", log_dir_.string()},
+                                 {"filename", "test.log"},
+                                 {"max_size", 10 * 1024 * 1024},
+                                 {"max_files", 2},
+                                 {"app_name", "LoggerStreamTest"}};
         fs::path config_file = fs::temp_directory_path() / ("logger_stream_test_" + std::to_string(getpid()) + ".json");
         std::ofstream(config_file) << config.dump();
 
@@ -40,10 +42,7 @@ protected:
         fs::remove(config_file);
     }
 
-    static void TearDownTestSuite()
-    {
-        fs::remove_all(log_dir_);
-    }
+    static void TearDownTestSuite() { fs::remove_all(log_dir_); }
 
     // Message text of every plain text record written to the log file so far.
     // A record looks like:
@@ -122,12 +121,14 @@ TEST_F(LoggerStreamTest, EachThreadKeepsItsOwnMessages)
     std::vector<std::thread> threads;
     for (int t = 0; t < num_threads; ++t)
     {
-        threads.emplace_back([t]()
-                             {
-            for (int i = 0; i < logs_per_thread; ++i)
+        threads.emplace_back(
+            [t]()
             {
-                LOG_INFO() << "t" << t << "-" << i << std::endl;
-            } });
+                for (int i = 0; i < logs_per_thread; ++i)
+                {
+                    LOG_INFO() << "t" << t << "-" << i << std::endl;
+                }
+            });
     }
     for (auto &thread : threads)
     {

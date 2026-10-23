@@ -1,0 +1,30 @@
+# Based on the VS Code C/C++ extension's default style, which the existing code was formatted with,
+# plus a 120 column limit so long lines are wrapped consistently instead of left as typed
+BasedOnStyle: LLVM
+UseTab: Never
+IndentWidth: 4
+TabWidth: 4
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 120
+
+# public: / private: line up with the class keyword
+AccessModifierOffset: -4
+# One-line bodies only inside a class definition; out-of-line definitions keep their braces on own lines
+AllowShortFunctionsOnASingleLine: InlineOnly
+# Line continuation backslashes in macros sit right after the longest line, not at column 120
+AlignEscapedNewlines: Left
+
+# A source file's own header first, then C/POSIX headers, the C++ standard library,
+# third-party libraries, and this project's own headers, each as its own block
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^<(gtest|gmock|nlohmann)/'
+    Priority: 3
+  - Regex: '^<[a-z_]+>$'
+    Priority: 2
+  - Regex: '^<'
+    Priority: 1
+  - Regex: '.*'
+    Priority: 4

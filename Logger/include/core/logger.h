@@ -2,60 +2,54 @@
 #define LOGGER_H
 
 #include <mutex>
-#include "podInfo_Retriever.h"
-#include "config_file.h"
+
 #include "LogLevel.h"
-#include "models/logInfoModel.h"
-#include "models/sysInfoModel.h"
+#include "config_file.h"
 #include "formatMessage/JsonMessageFormatter.h"
 #include "formatMessage/MessageFormatter.h"
 #include "formatMessage/PlainMessageFormatter.h"
 #include "log_store_controller.h"
+#include "models/logInfoModel.h"
+#include "models/sysInfoModel.h"
+#include "podInfo_Retriever.h"
 
 // make_unique is only defined in C++11
 #if __cplusplus == 201103L
 namespace std
 {
-    template <typename T, typename... Args>
-    typename std::enable_if<!std::is_array<T>::value, std::unique_ptr<T>>::type
-    make_unique(Args &&...args)
-    {
-        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-    }
-
-    template <typename T>
-    typename std::enable_if<std::is_array<T>::value && std::extent<T>::value == 0, std::unique_ptr<T>>::type
-    make_unique(size_t size)
-    {
-        typedef typename std::remove_extent<T>::type U;
-        return std::unique_ptr<T>(new U[size]());
-    }
-
-    template <typename T, typename... Args>
-    typename std::enable_if<std::extent<T>::value != 0, void>::type
-    make_unique(Args &&...) = delete;
+template <typename T, typename... Args>
+typename std::enable_if<!std::is_array<T>::value, std::unique_ptr<T>>::type make_unique(Args &&...args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+template <typename T>
+typename std::enable_if<std::is_array<T>::value && std::extent<T>::value == 0, std::unique_ptr<T>>::type
+make_unique(size_t size)
+{
+    typedef typename std::remove_extent<T>::type U;
+    return std::unique_ptr<T>(new U[size]());
+}
+
+template <typename T, typename... Args>
+typename std::enable_if<std::extent<T>::value != 0, void>::type make_unique(Args &&...) = delete;
+} // namespace std
 #endif
-#define LOG_DEBUG(device_id)                                                        \
-    Logger::getInstance() << LogLevel::DEBUG << Logger::LogFunction(__FUNCTION__)   \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
-                          << Logger::DeviceId(device_id)
-#define LOG_INFO(device_id)                                                         \
-    Logger::getInstance() << LogLevel::INFO << Logger::LogFunction(__FUNCTION__)    \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
-                          << Logger::DeviceId(device_id)
-#define LOG_WARN(device_id)                                                         \
-    Logger::getInstance() << LogLevel::WARN << Logger::LogFunction(__FUNCTION__)    \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
-                          << Logger::DeviceId(device_id)
-#define LOG_ERROR(device_id)                                                        \
-    Logger::getInstance() << LogLevel::ERROR << Logger::LogFunction(__FUNCTION__)   \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__) \
-                          << Logger::DeviceId(device_id)
-#define LOG_CRITICAL(device_id)                                                      \
-    Logger::getInstance() << LogLevel::CRITICAL << Logger::LogFunction(__FUNCTION__) \
-                          << Logger::LogFile(__FILE__) << Logger::LogLine(__LINE__)  \
-                          << Logger::DeviceId(device_id)
+#define LOG_DEBUG(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::DEBUG << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_INFO(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::INFO << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_WARN(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::WARN << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_ERROR(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::ERROR << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_CRITICAL(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::CRITICAL << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
 
 class Logger
 {
@@ -96,8 +90,7 @@ public:
         explicit DeviceId(const std::string &id) : value(id) {}
     };
 
-    template <typename T>
-    Logger &operator<<(const T &value)
+    template <typename T> Logger &operator<<(const T &value)
     {
         _stream << value;
         return *this;

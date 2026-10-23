@@ -1,16 +1,18 @@
-#include <ctime>
-#include <iomanip>
-#include <sstream>
-#include <iostream>
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <stdexcept>
-#include <sys/stat.h>
 #include <errno.h>
+#include <sys/stat.h>
+
 #include <cstring>
-#include <thread>
+#include <ctime>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <mutex>
+#include <sstream>
+#include <stdexcept>
+#include <thread>
 #include <vector>
+
+#include <nlohmann/json.hpp>
 // #include "logMessage.cpp"
 #include "include/core/logger.h"
 void workerFunction(int id)

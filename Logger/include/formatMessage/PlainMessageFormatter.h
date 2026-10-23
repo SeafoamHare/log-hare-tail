@@ -2,6 +2,7 @@
 #define PLAINMESSAGEFORMATTER_H
 
 #include <string>
+
 #include "MessageFormatter.h"
 
 class PlainMessageFormatter : public MessageFormatter

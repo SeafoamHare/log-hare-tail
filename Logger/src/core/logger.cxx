@@ -1,4 +1,5 @@
 #include "core/logger.h"
+
 #include <stdexcept>
 
 void Logger::initialize(const std::string &config_file)

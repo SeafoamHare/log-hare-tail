@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <memory>
+
 #include "config_file.h"
 class LogStoreController
 {
