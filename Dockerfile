@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libclang-rt-dev \
         cmake \
         ninja-build \
+        clang-format \
         ca-certificates \
         nlohmann-json3-dev \
     && rm -rf /var/lib/apt/lists/*

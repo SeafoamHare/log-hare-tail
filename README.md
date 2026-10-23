@@ -90,6 +90,21 @@ $ cmake --workflow --preset asan                       # configure + build + tes
 $ ctest --preset dev -R LoggerStreamTest               # rerun only the tests matching a name
 ```
 
+### Code style
+
+Formatting follows [Logger/.clang-format](Logger/.clang-format) and CI rejects unformatted code.
+Different clang-format versions can format the same code differently, so run the formatter
+from the dev image, which has the same version CI uses:
+
+```
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/format.sh          # format in place
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/format.sh --check  # what CI runs
+```
+
+The reformatting commit is listed in [.git-blame-ignore-revs](.git-blame-ignore-revs). GitHub's
+blame view skips it automatically; to skip it locally too, run once:
+`git config blame.ignoreRevsFile .git-blame-ignore-revs`
+
 ### Running the CI checks locally
 
 CI runs every Linux check inside the `dev` stage of the Dockerfile, with the checkout mounted in.
@@ -109,6 +124,7 @@ Linux builds land in `build/Linux/`, so they never mix with builds made on a mac
 | `linux / gcc`, `linux / clang` | Unit tests pass, with warnings treated as errors |
 | `linux / tsan` | No data races under ThreadSanitizer |
 | `linux / asan` | No memory errors, leaks, or undefined behavior under ASan + UBSan |
+| `linux / format` | Every source file matches `.clang-format` |
 | `macos / clang` | Builds and passes tests natively on macOS |
 
 ## Configuration

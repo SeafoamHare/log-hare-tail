@@ -44,6 +44,7 @@ jobs:
           # TSan and ASan runtimes cannot share one binary, so each gets its own job
           - { check: tsan, cmd: "cmake --workflow --preset tsan" }
           - { check: asan, cmd: "cmake --workflow --preset asan" }
+          - { check: format, cmd: "scripts/format.sh --check" }
     steps:
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
