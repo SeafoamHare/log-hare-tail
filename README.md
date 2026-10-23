@@ -82,6 +82,7 @@ CTest runs every test case in its own process, in parallel.
 | `gcc`, `clang` | Unit tests with that compiler, warnings treated as errors |
 | `tsan` | Unit tests under ThreadSanitizer (data races) |
 | `asan` | Unit tests under AddressSanitizer + UndefinedBehaviorSanitizer |
+| `tidy` | Builds the library and demo with [clang-tidy](Logger/.clang-tidy); any finding fails the build |
 | `release` | Optimized demo build without tests (used by the Docker image) |
 
 ```
@@ -125,6 +126,7 @@ Linux builds land in `build/Linux/`, so they never mix with builds made on a mac
 | `linux / tsan` | No data races under ThreadSanitizer |
 | `linux / asan` | No memory errors, leaks, or undefined behavior under ASan + UBSan |
 | `linux / format` | Every source file matches `.clang-format` |
+| `linux / tidy` | No clang-tidy findings (bug patterns, static analyzer, performance, modernization) |
 | `macos / clang` | Builds and passes tests natively on macOS |
 
 ## Configuration

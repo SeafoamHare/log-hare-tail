@@ -54,6 +54,16 @@
             }
         },
         {
+            "name": "tidy",
+            "displayName": "Clang + clang-tidy on the library and demo, findings as errors",
+            "inherits": "ci",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "LOGGER_CLANG_TIDY": "ON",
+                "LOGGER_BUILD_TESTS": "OFF"
+            }
+        },
+        {
             "name": "release",
             "displayName": "Optimized demo build without tests (used by the Docker image)",
             "inherits": "base",
@@ -69,6 +79,7 @@
         { "name": "clang", "configurePreset": "clang" },
         { "name": "tsan", "configurePreset": "tsan" },
         { "name": "asan", "configurePreset": "asan" },
+        { "name": "tidy", "configurePreset": "tidy" },
         { "name": "release", "configurePreset": "release" }
     ],
     "testPresets": [
@@ -123,6 +134,13 @@
                 { "type": "configure", "name": "asan" },
                 { "type": "build", "name": "asan" },
                 { "type": "test", "name": "asan" }
+            ]
+        },
+        {
+            "name": "tidy",
+            "steps": [
+                { "type": "configure", "name": "tidy" },
+                { "type": "build", "name": "tidy" }
             ]
         },
         {
