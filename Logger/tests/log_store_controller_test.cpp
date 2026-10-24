@@ -1,10 +1,13 @@
-#include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
+#include <unistd.h>
+
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <unistd.h>
+
+#include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
+
 #include "core/log_store_controller.h"
 
 namespace fs = std::filesystem;
@@ -33,20 +36,16 @@ protected:
 
     Config_File makeConfig(std::uint64_t max_size, int max_files)
     {
-        nlohmann::json config = {
-            {"log_directory", log_dir_.string()},
-            {"filename", "test.log"},
-            {"max_size", max_size},
-            {"max_files", max_files},
-            {"app_name", "LogStoreControllerTest"}};
+        nlohmann::json config = {{"log_directory", log_dir_.string()},
+                                 {"filename", "test.log"},
+                                 {"max_size", max_size},
+                                 {"max_files", max_files},
+                                 {"app_name", "LogStoreControllerTest"}};
         std::ofstream(config_file_) << config.dump();
         return Config_File(config_file_.string());
     }
 
-    fs::path logPath(const std::string &name) const
-    {
-        return log_dir_ / name;
-    }
+    fs::path logPath(const std::string &name) const { return log_dir_ / name; }
 
     std::string readFile(const std::string &name) const
     {
@@ -76,7 +75,8 @@ TEST_F(LogStoreControllerTest, MaxSizeAboveIntRangeIsNotTruncated)
         }
 
         EXPECT_FALSE(fs::exists(logPath("0.test.log")));
-        EXPECT_EQ(readFile("test.log"), "line 1 of a message that is longer than sixty-four bytes in total\nline 2\nline 3\n");
+        EXPECT_EQ(readFile("test.log"),
+                  "line 1 of a message that is longer than sixty-four bytes in total\nline 2\nline 3\n");
     }
 }
 

@@ -1,17 +1,18 @@
-#include <ctime>
-#include <iomanip>
-#include <filesystem>
-#include <sstream>
-#include <iostream>
-#include <nlohmann/json.hpp>
-#include <fstream>
-#include <stdexcept>
 #include <sys/stat.h>
-#include <errno.h>
+
+#include <cerrno>
 #include <cstring>
-#include <thread>
+#include <ctime>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <mutex>
+#include <sstream>
+#include <stdexcept>
+#include <thread>
 #include <vector>
+
+#include <nlohmann/json.hpp>
 // #include "logMessage.cpp"
 #include "include/core/logger.h"
 void workerFunction(int id)
@@ -34,6 +35,7 @@ int main()
         LOG_INFO("DEVICE-001") << "Application started" << std::endl;
         std::vector<std::thread> threads;
         const int numThreads = 5;
+        threads.reserve(numThreads);
 
         for (int i = 0; i < numThreads; ++i)
         {

@@ -1,0 +1,173 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${hostSystemName}/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "ci",
+            "hidden": true,
+            "inherits": "base",
+            "cacheVariables": { "LOGGER_WERROR": "ON" }
+        },
+        {
+            "name": "dev",
+            "displayName": "Local development build with the default compiler",
+            "inherits": "base"
+        },
+        {
+            "name": "gcc",
+            "displayName": "GCC, warnings as errors",
+            "inherits": "ci",
+            "cacheVariables": { "CMAKE_CXX_COMPILER": "g++" }
+        },
+        {
+            "name": "clang",
+            "displayName": "Clang, warnings as errors",
+            "inherits": "ci",
+            "cacheVariables": { "CMAKE_CXX_COMPILER": "clang++" }
+        },
+        {
+            "name": "tsan",
+            "displayName": "Clang + ThreadSanitizer",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_FLAGS": "-fsanitize=thread -O1"
+            }
+        },
+        {
+            "name": "asan",
+            "displayName": "Clang + AddressSanitizer + UndefinedBehaviorSanitizer",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -O1"
+            }
+        },
+        {
+            "name": "coverage",
+            "displayName": "GCC with --coverage, for scripts/coverage.sh",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_CXX_FLAGS": "--coverage"
+            }
+        },
+        {
+            "name": "tidy",
+            "displayName": "Clang + clang-tidy on the library and demo, findings as errors",
+            "inherits": "ci",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "LOGGER_CLANG_TIDY": "ON",
+                "LOGGER_BUILD_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Optimized demo build without tests (used by the Docker image)",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "LOGGER_BUILD_TESTS": "OFF"
+            }
+        }
+    ],
+    "buildPresets": [
+        { "name": "dev", "configurePreset": "dev" },
+        { "name": "gcc", "configurePreset": "gcc" },
+        { "name": "clang", "configurePreset": "clang" },
+        { "name": "tsan", "configurePreset": "tsan" },
+        { "name": "asan", "configurePreset": "asan" },
+        { "name": "coverage", "configurePreset": "coverage" },
+        { "name": "tidy", "configurePreset": "tidy" },
+        { "name": "release", "configurePreset": "release" }
+    ],
+    "testPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "output": { "outputOnFailure": true },
+            "execution": { "noTestsAction": "error", "jobs": 4 }
+        },
+        { "name": "dev", "inherits": "base", "configurePreset": "dev" },
+        { "name": "gcc", "inherits": "base", "configurePreset": "gcc" },
+        { "name": "clang", "inherits": "base", "configurePreset": "clang" },
+        { "name": "tsan", "inherits": "base", "configurePreset": "tsan" },
+        { "name": "asan", "inherits": "base", "configurePreset": "asan" },
+        { "name": "coverage", "inherits": "base", "configurePreset": "coverage" }
+    ],
+    "workflowPresets": [
+        {
+            "name": "dev",
+            "steps": [
+                { "type": "configure", "name": "dev" },
+                { "type": "build", "name": "dev" },
+                { "type": "test", "name": "dev" }
+            ]
+        },
+        {
+            "name": "gcc",
+            "steps": [
+                { "type": "configure", "name": "gcc" },
+                { "type": "build", "name": "gcc" },
+                { "type": "test", "name": "gcc" }
+            ]
+        },
+        {
+            "name": "clang",
+            "steps": [
+                { "type": "configure", "name": "clang" },
+                { "type": "build", "name": "clang" },
+                { "type": "test", "name": "clang" }
+            ]
+        },
+        {
+            "name": "tsan",
+            "steps": [
+                { "type": "configure", "name": "tsan" },
+                { "type": "build", "name": "tsan" },
+                { "type": "test", "name": "tsan" }
+            ]
+        },
+        {
+            "name": "asan",
+            "steps": [
+                { "type": "configure", "name": "asan" },
+                { "type": "build", "name": "asan" },
+                { "type": "test", "name": "asan" }
+            ]
+        },
+        {
+            "name": "coverage",
+            "steps": [
+                { "type": "configure", "name": "coverage" },
+                { "type": "build", "name": "coverage" },
+                { "type": "test", "name": "coverage" }
+            ]
+        },
+        {
+            "name": "tidy",
+            "steps": [
+                { "type": "configure", "name": "tidy" },
+                { "type": "build", "name": "tidy" }
+            ]
+        },
+        {
+            "name": "release",
+            "steps": [
+                { "type": "configure", "name": "release" },
+                { "type": "build", "name": "release" }
+            ]
+        }
+    ]
+}

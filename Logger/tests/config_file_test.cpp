@@ -1,11 +1,14 @@
-#include <gtest/gtest.h>
-#include <nlohmann/json.hpp>
+#include <unistd.h>
+
 #include <filesystem>
 #include <fstream>
 #include <limits>
 #include <stdexcept>
 #include <string>
-#include <unistd.h>
+
+#include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
+
 #include "core/config_file.h"
 
 namespace fs = std::filesystem;
@@ -32,18 +35,14 @@ protected:
 
     nlohmann::json validConfig() const
     {
-        return {
-            {"log_directory", log_dir_.string()},
-            {"filename", "test.log"},
-            {"max_size", 1024},
-            {"max_files", 3},
-            {"app_name", "ConfigFileTest"}};
+        return {{"log_directory", log_dir_.string()},
+                {"filename", "test.log"},
+                {"max_size", 1024},
+                {"max_files", 3},
+                {"app_name", "ConfigFileTest"}};
     }
 
-    void writeConfig(const nlohmann::json &config) const
-    {
-        std::ofstream(config_file_) << config.dump();
-    }
+    void writeConfig(const nlohmann::json &config) const { std::ofstream(config_file_) << config.dump(); }
 };
 
 class ConfigFileTest : public ::testing::Test, protected ConfigFileTestBase
@@ -163,16 +162,14 @@ TEST_P(ConfigFileInvalidFieldTest, ThrowsWithFieldName)
     }
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    OutOfRange, ConfigFileInvalidFieldTest,
-    ::testing::Values(
-        InvalidField{"max_size", nullptr, "max_size_missing"},
-        InvalidField{"max_size", 0, "max_size_zero"},
-        InvalidField{"max_size", -1, "max_size_negative"},
-        InvalidField{"max_size", 1.5, "max_size_fraction"},
-        InvalidField{"max_size", "1024", "max_size_string"},
-        InvalidField{"max_files", nullptr, "max_files_missing"},
-        InvalidField{"max_files", 0, "max_files_zero"},
-        InvalidField{"max_files", -1, "max_files_negative"},
-        InvalidField{"max_files", 2147483648LL, "max_files_above_int_max"}),
-    [](const ::testing::TestParamInfo<InvalidField> &info) { return info.param.label; });
+INSTANTIATE_TEST_SUITE_P(OutOfRange, ConfigFileInvalidFieldTest,
+                         ::testing::Values(InvalidField{"max_size", nullptr, "max_size_missing"},
+                                           InvalidField{"max_size", 0, "max_size_zero"},
+                                           InvalidField{"max_size", -1, "max_size_negative"},
+                                           InvalidField{"max_size", 1.5, "max_size_fraction"},
+                                           InvalidField{"max_size", "1024", "max_size_string"},
+                                           InvalidField{"max_files", nullptr, "max_files_missing"},
+                                           InvalidField{"max_files", 0, "max_files_zero"},
+                                           InvalidField{"max_files", -1, "max_files_negative"},
+                                           InvalidField{"max_files", 2147483648LL, "max_files_above_int_max"}),
+                         [](const ::testing::TestParamInfo<InvalidField> &info) { return info.param.label; });

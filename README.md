@@ -41,24 +41,27 @@ A thread-safe, feature-rich logging system for C++ applications with JSON consol
   - Pod ID (the hostname, which is the pod name when running in Kubernetes)
 
 ## Requirements
-- C++11 or higher (for thread_local support and other modern C++ features)
+- A C++11 compiler for the library (the tests use C++17). CI builds the library as C++11 to keep this true
+- CMake 3.25 or newer, and Ninja
 - nlohmann/json library
 
 ```
 # Ubuntu / Debian
 $ sudo apt-get update
-$ sudo apt-get install nlohmann-json3-dev
+$ sudo apt-get install cmake ninja-build nlohmann-json3-dev
 
 # macOS
-$ brew install nlohmann-json
+$ brew install cmake ninja nlohmann-json
 ```
 
 ## Build & Run
 
+Builds are driven by [CMake presets](Logger/CMakePresets.json); each preset builds into `Logger/build/<OS>/<preset>/`.
+
 ```
 $ cd Logger
-$ make        # builds obj/logimp from main.cpp and src/
-$ make run    # runs the demo with logger_config.json
+$ cmake --workflow --preset dev       # configure, build and run the tests
+$ ./build/Darwin/dev/logimp           # run the demo (build/Linux/dev on Linux)
 ```
 
 Or build and run inside Docker:
@@ -70,28 +73,66 @@ $ docker run --rm log-hare-tail
 
 ## Testing
 
-Tests use [GoogleTest](https://github.com/google/googletest), cloned into `Logger/third_party/`:
+Tests use [GoogleTest](https://github.com/google/googletest) v1.14.0, which CMake downloads on the first configure.
+CTest runs every test case in its own process, in parallel.
+
+| Preset | What it runs |
+|---|---|
+| `dev` | Unit tests with your default compiler |
+| `gcc`, `clang` | Unit tests with that compiler, warnings treated as errors |
+| `tsan` | Unit tests under ThreadSanitizer (data races) |
+| `asan` | Unit tests under AddressSanitizer + UndefinedBehaviorSanitizer |
+| `tidy` | Builds the library and demo with [clang-tidy](Logger/.clang-tidy); any finding fails the build |
+| `coverage` | Unit tests built with `--coverage`, used by `scripts/coverage.sh` |
+| `release` | Optimized demo build without tests (used by the Docker image) |
 
 ```
 $ cd Logger
-$ git clone --depth 1 --branch v1.14.0 https://github.com/google/googletest.git third_party/googletest
-$ make test        # unit tests
-$ make test-tsan   # with ThreadSanitizer (data races)
-$ make test-asan   # with AddressSanitizer + UndefinedBehaviorSanitizer
+$ cmake --workflow --preset asan                       # configure + build + test in one step
+$ ctest --preset dev -R LoggerStreamTest               # rerun only the tests matching a name
 ```
 
-Pass `WERROR=1` to turn compiler warnings into errors, and `CXX=clang++` to switch compilers.
+### Coverage
+
+`scripts/coverage.sh` runs the tests with coverage and reports how much of the library
+(`src/` and `include/`) they execute. It fails when line coverage drops below 85%.
+It needs gcc and gcovr, so run it in the dev image:
+
+```
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/coverage.sh
+$ open Logger/build/Linux/coverage/report/index.html      # per-line HTML report
+```
+
+In CI, the `linux / coverage` job shows the per-file table in the run summary and uploads
+the HTML report as the `coverage-report` artifact.
+
+### Code style
+
+Formatting follows [Logger/.clang-format](Logger/.clang-format) and CI rejects unformatted code.
+Different clang-format versions can format the same code differently, so run the formatter
+from the dev image, which has the same version CI uses:
+
+```
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/format.sh          # format in place
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/format.sh --check  # what CI runs
+```
+
+The reformatting commit is listed in [.git-blame-ignore-revs](.git-blame-ignore-revs). GitHub's
+blame view skips it automatically; to skip it locally too, run once:
+`git config blame.ignoreRevsFile .git-blame-ignore-revs`
 
 ### Running the CI checks locally
 
-CI runs every check inside the `dev` stage of the Dockerfile, with the checkout mounted in.
+CI runs every Linux check inside the `dev` stage of the Dockerfile, with the checkout mounted in.
 The same commands reproduce a CI failure on your machine:
 
 ```
 $ docker build --target dev -t log-hare-tail:dev .
-$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev make test CXX=g++ WERROR=1
-$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev make test-asan CXX=clang++
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev cmake --workflow --preset gcc
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev cmake --workflow --preset asan
 ```
+
+Linux builds land in `build/Linux/`, so they never mix with builds made on a macOS host.
 
 | CI job | What it checks |
 |---|---|
@@ -99,6 +140,9 @@ $ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev make test-asan CXX=clan
 | `linux / gcc`, `linux / clang` | Unit tests pass, with warnings treated as errors |
 | `linux / tsan` | No data races under ThreadSanitizer |
 | `linux / asan` | No memory errors, leaks, or undefined behavior under ASan + UBSan |
+| `linux / format` | Every source file matches `.clang-format` |
+| `linux / tidy` | No clang-tidy findings (bug patterns, static analyzer, performance, modernization) |
+| `linux / coverage` | Line coverage of the library stays at or above 85%; HTML report as an artifact |
 | `macos / clang` | Builds and passes tests natively on macOS |
 
 ## Configuration

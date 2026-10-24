@@ -1,13 +1,21 @@
 #include "core/podInfo_Retriever.h"
 
+#include <array>
+
+// HOST_NAME_MAX is Linux-only (macOS does not define it); POSIX guarantees hostnames up to 255 bytes
+#ifndef HOST_NAME_MAX
+#define HOST_NAME_MAX 255
+#endif
+
 std::string PodInfoRetriever::getPodId()
 {
-    char hostname[HOST_NAME_MAX];
-    if (gethostname(hostname, HOST_NAME_MAX) != 0)
+    // gethostname() does not have to null-terminate a truncated name, so keep one byte spare
+    std::array<char, HOST_NAME_MAX + 1> hostname{};
+    if (gethostname(hostname.data(), HOST_NAME_MAX) != 0)
     {
         throw std::runtime_error("Failed to get hostname");
     }
-    return std::string(hostname);
+    return std::string(hostname.data());
 }
 
 std::string PodInfoRetriever::getPodIp()

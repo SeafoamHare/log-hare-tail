@@ -1,19 +1,24 @@
 #include "core/config_file.h"
+
 #include <cstdint>
 #include <limits>
 
 // Reads an integer field that must be between 1 and max. A missing field, 0, a negative
 // number, a fraction or a string is rejected with a message naming the field, instead of
 // wrapping around when converted to an unsigned type
-static std::uint64_t readPositiveInteger(const json &j, const std::string &key, std::uint64_t max)
+namespace
 {
-    if (!j.contains(key) || !j.at(key).is_number_unsigned() ||
-        j.at(key).get<std::uint64_t>() == 0 || j.at(key).get<std::uint64_t>() > max)
+std::uint64_t readPositiveInteger(const json &j, const std::string &key, std::uint64_t max)
+{
+    if (!j.contains(key) || !j.at(key).is_number_unsigned() || j.at(key).get<std::uint64_t>() == 0 ||
+        j.at(key).get<std::uint64_t>() > max)
     {
-        throw std::runtime_error("Invalid config: \"" + key + "\" must be an integer between 1 and " + std::to_string(max));
+        throw std::runtime_error("Invalid config: \"" + key + "\" must be an integer between 1 and " +
+                                 std::to_string(max));
     }
     return j.at(key).get<std::uint64_t>();
 }
+} // namespace
 
 Config_File::Config_File(const std::string &config_file)
 {
@@ -37,7 +42,8 @@ Config_File::Config_File(const std::string &config_file)
 
     if (!createDirectory(log_directory))
     {
-        throw std::runtime_error("Unable to create log directory: " + log_directory + ", error: " + std::strerror(errno));
+        throw std::runtime_error("Unable to create log directory: " + log_directory +
+                                 ", error: " + std::strerror(errno));
     }
 };
 

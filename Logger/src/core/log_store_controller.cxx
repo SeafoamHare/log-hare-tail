@@ -1,13 +1,10 @@
 #include "core/log_store_controller.h"
-#include <filesystem>
 
 LogStoreController::LogStoreController(Config_File &config)
+    : file_directory_(config.log_directory), file_filename_(config.filename),
+      file_full_path_(config.log_directory + "/" + config.filename), file_max_size_(config.max_size),
+      file_max_create_count_(config.max_files)
 {
-    file_directory_ = config.log_directory;
-    file_filename_ = config.filename;
-    file_full_path_ = config.log_directory + "/" + config.filename;
-    file_max_size_ = config.max_size;
-    file_max_create_count_ = config.max_files;
     file_.open(file_full_path_, std::ios::app);
     if (!file_.is_open())
     {
@@ -27,7 +24,7 @@ void LogStoreController::Write(const std::string &logmsg)
 {
     if (file_.is_open())
     {
-        file_ << logmsg << std::endl;
+        file_ << logmsg << '\n';
         file_.flush();
 
         file_.seekp(0, std::ios::end);

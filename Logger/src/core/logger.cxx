@@ -1,4 +1,5 @@
 #include "core/logger.h"
+
 #include <stdexcept>
 
 void Logger::initialize(const std::string &config_file)
@@ -38,10 +39,6 @@ void Logger::log()
     // Plain text format for file output
     std::string plain_message = file_formatter_->format(sysInfo_, _logInfo);
     logStoreController->Write(plain_message);
-}
-
-Logger::~Logger()
-{
 }
 
 thread_local std::ostringstream Logger::_stream;

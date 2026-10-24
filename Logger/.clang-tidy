@@ -1,0 +1,45 @@
+# Run through the "tidy" CMake preset, on the library and the demo (not the tests).
+# Every remaining finding is an error, so a disabled check below needs a reason.
+Checks:
+  - bugprone-*
+  - clang-analyzer-*
+  - cppcoreguidelines-*
+  - misc-*
+  - modernize-*
+  - performance-*
+  - readability-*
+
+  # Style preferences, not defects
+  - -modernize-use-trailing-return-type
+  - -modernize-return-braced-init-list
+  - -readability-identifier-length
+  - -misc-const-correctness
+
+  # Flags obvious constants such as 1000 ms per second and setw(3) for milliseconds
+  - -cppcoreguidelines-avoid-magic-numbers
+  - -readability-magic-numbers
+
+  # std::endl is how the Logger API ends a record (LOG_INFO() << "..." << std::endl), and the
+  # console output flushes per record on purpose so log collectors see each line immediately
+  - -performance-avoid-endl
+
+  # Flags every string literal streamed through Logger::operator<<, which is the intended use
+  - -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+
+  # Headers still rely on includes they get through other headers. Making each header include
+  # exactly what it uses is worth doing, but as its own change
+  - -misc-include-cleaner
+
+CheckOptions:
+  # LOG_* must be macros to capture __FILE__, __LINE__ and __FUNCTION__ at the call site,
+  # and HOST_NAME_MAX is a fallback for a platform macro
+  cppcoreguidelines-macro-usage.AllowedRegexp: '^(LOG_[A-Z]+|HOST_NAME_MAX)$'
+  # Plain data types (config fields, log record fields, tag structs) are meant to be all public
+  misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic: true
+  # A polymorphic base with only "virtual ~T() = default" is fine, and so is a non-copyable type
+  # that deletes copying without also spelling out the (then implicitly absent) move operations
+  cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
+  cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted: true
+
+HeaderFilterRegex: '.*/Logger/include/.*'
+WarningsAsErrors: '*'

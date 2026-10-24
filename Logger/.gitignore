@@ -43,5 +43,3 @@ cmake_install.cmake
 # OS specific files
 .DS_Store
 Thumbs.db
-# googletest is cloned locally, see the check-gtest target in Makefile
-third_party/
