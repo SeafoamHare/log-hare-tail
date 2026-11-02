@@ -45,7 +45,9 @@ set_target_properties(logger PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON
 logger_target_defaults(logger)
 logger_enable_clang_tidy(logger)
 
-add_executable(logimp main.cpp)
+add_executable(logimp examples/basic/main.cpp)
+# The demo reads logger_config.json from the working directory, so a copy goes next to the binary
+configure_file(examples/basic/logger_config.json logger_config.json COPYONLY)
 target_link_libraries(logimp PRIVATE logger)
 set_target_properties(logimp PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
 logger_target_defaults(logimp)

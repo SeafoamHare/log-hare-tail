@@ -31,5 +31,5 @@ RUN cmake --workflow --preset release
 FROM ubuntu:24.04 AS runtime
 WORKDIR /app
 COPY --from=build /workspace/build/Linux/release/logimp /usr/local/bin/logimp
-COPY --from=build /workspace/logger_config.json .
+COPY --from=build /workspace/examples/basic/logger_config.json .
 CMD ["logimp"]

@@ -60,7 +60,7 @@ Builds are driven by [CMake presets](CMakePresets.json); each preset builds into
 
 ```
 $ cmake --workflow --preset dev       # configure, build and run the tests
-$ ./build/Darwin/dev/logimp           # run the demo (build/Linux/dev on Linux)
+$ cd build/Darwin/dev && ./logimp    # run the demo in examples/basic/ (build/Linux/dev on Linux)
 ```
 
 Or build and run inside Docker:
@@ -244,8 +244,8 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
   "@timestamp":"2024-11-08 18:00:27.884",
   "app.name":"MyApplication",
   "device.id":"DEVICE-001",
-  "file":"main.cpp",
-  "line":36,
+  "file":"examples/basic/main.cpp",
+  "line":35,
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
@@ -255,7 +255,7 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 
 #### File Output (Plain Text)
 ```
-2024-11-08 18:00:27.884 [INFO] [main] Application started (file: main.cpp, line: 36) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m) (device: DEVICE-001)
+2024-11-08 18:00:27.884 [INFO] [main] Application started (file: examples/basic/main.cpp, line: 35) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m) (device: DEVICE-001)
 ```
 ### Output Format ( Without device id )
 
@@ -264,8 +264,8 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 {
   "@timestamp":"2024-11-08 18:00:27.884",
   "app.name":"MyApplication",
-  "file":"main.cpp",
-  "line":36,
+  "file":"examples/basic/main.cpp",
+  "line":35,
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
@@ -275,7 +275,7 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 
 #### File Output (Plain Text)
 ```
-2024-11-08 18:00:27.884 [INFO] [main] Application started (file: main.cpp, line: 36) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
+2024-11-08 18:00:27.884 [INFO] [main] Application started (file: examples/basic/main.cpp, line: 35) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
 ```
 ## Log Rotation
 
@@ -294,18 +294,23 @@ app.log      # Current log file
 3.app.log    # Oldest backup
 ```
 
-<!-- ## Directory Structure
+## Directory Structure
 ```
-Logger/
-├── include/              # Header files
-│   ├── logger.h/       # Level Struct
-│   ├── config_file.h/  
-│   └── podInfo_Retriever.h/  
-├── src/              # Source files
-│   ├── logger.cxx/       # Core functionality
-│   ├── config_file.cxx/  # Additional modules
-│   └── podInfo_Retriever.cxx/  # Get PODid
-``` -->
+include/log_hare_tail/     # Public headers: #include "log_hare_tail/logger.h"
+├── logger.h               # Logger singleton and the LOG_xxx macros
+├── log_level.h
+├── config_file.h          # Reads and validates the JSON config
+├── log_store_controller.h # Writes the log file and rotates it
+├── pod_info_retriever.h   # Reads the Kubernetes pod ID
+├── format/                # JSON (console) and plain-text (file) formatters
+└── model/                 # Data passed to the formatters
+src/                       # Implementation, same layout as include/log_hare_tail/
+tests/                     # GoogleTest unit tests, one executable per file
+bench/                     # Google Benchmark suite
+examples/basic/            # Demo program (logimp) and its logger_config.json
+scripts/                   # format.sh, coverage.sh, bench.sh
+docs/                      # Design notes
+```
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

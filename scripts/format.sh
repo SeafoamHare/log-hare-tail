@@ -6,7 +6,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-files=$(find include src tests bench main.cpp \( -name '*.h' -o -name '*.cpp' \) -print)
+files=$(find include src tests bench examples \( -name '*.h' -o -name '*.cpp' \) -print)
 
 if [ "${1:-}" = "--check" ]; then
     # shellcheck disable=SC2086 # word splitting is intended: one argument per file
