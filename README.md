@@ -73,7 +73,9 @@ $ docker run --rm log-hare-tail
 
 ## Testing
 
-Tests use [GoogleTest](https://github.com/google/googletest) v1.14.0, which CMake downloads on the first configure.
+Tests use [GoogleTest](https://github.com/google/googletest). CMake uses an installed copy when it finds one
+(`brew install googletest`, `apt install libgtest-dev`), and otherwise downloads v1.14.0 on the first configure.
+Pass `-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER` to always use the pinned download.
 CTest runs every test case in its own process, in parallel.
 
 | Preset | What it runs |
