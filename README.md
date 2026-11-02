@@ -308,9 +308,12 @@ src/                       # Implementation, same layout as include/log_hare_tai
 tests/                     # GoogleTest unit tests, one executable per file
 bench/                     # Google Benchmark suite
 examples/basic/            # Demo program (logimp) and its logger_config.json
-scripts/                   # format.sh, coverage.sh, bench.sh
+scripts/                   # format.sh, coverage.sh, bench.sh, check_readme_tree.py
 docs/                      # Design notes
 ```
+CI checks this tree against the repository with `scripts/check_readme_tree.py`: every path listed
+must exist, a directory whose contents are listed must list all of them, and every top-level
+directory must appear. After adding, moving or deleting files, update the tree and run the script.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
