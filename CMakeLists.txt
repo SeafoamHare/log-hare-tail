@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(log_hare_tail LANGUAGES CXX)
+project(log_hare_tail VERSION 0.1.1 LANGUAGES CXX)
 
 option(LOGGER_BUILD_TESTS "Build the unit tests" ${PROJECT_IS_TOP_LEVEL})
 option(LOGGER_BUILD_BENCHMARKS "Build the Google Benchmark suite in bench/" OFF)
