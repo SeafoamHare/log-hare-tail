@@ -73,6 +73,17 @@
             }
         },
         {
+            "name": "bench",
+            "displayName": "Google Benchmark suite at -O2, without tests, for scripts/bench.sh",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_FLAGS_RELEASE": "-O2 -DNDEBUG",
+                "LOGGER_BUILD_BENCHMARKS": "ON",
+                "LOGGER_BUILD_TESTS": "OFF"
+            }
+        },
+        {
             "name": "release",
             "displayName": "Optimized demo build without tests (used by the Docker image)",
             "inherits": "base",
@@ -90,6 +101,7 @@
         { "name": "asan", "configurePreset": "asan" },
         { "name": "coverage", "configurePreset": "coverage" },
         { "name": "tidy", "configurePreset": "tidy" },
+        { "name": "bench", "configurePreset": "bench" },
         { "name": "release", "configurePreset": "release" }
     ],
     "testPresets": [
@@ -160,6 +172,13 @@
             "steps": [
                 { "type": "configure", "name": "tidy" },
                 { "type": "build", "name": "tidy" }
+            ]
+        },
+        {
+            "name": "bench",
+            "steps": [
+                { "type": "configure", "name": "bench" },
+                { "type": "build", "name": "bench" }
             ]
         },
         {

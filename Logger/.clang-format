@@ -20,7 +20,7 @@ AlignEscapedNewlines: Left
 # third-party libraries, and this project's own headers, each as its own block
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: '^<(gtest|gmock|nlohmann)/'
+  - Regex: '^<(gtest|gmock|benchmark|nlohmann)/'
     Priority: 3
   - Regex: '^<[a-z_]+>$'
     Priority: 2

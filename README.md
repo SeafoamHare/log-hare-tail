@@ -86,6 +86,7 @@ CTest runs every test case in its own process, in parallel.
 | `asan` | Unit tests under AddressSanitizer + UndefinedBehaviorSanitizer |
 | `tidy` | Builds the library and demo with [clang-tidy](Logger/.clang-tidy); any finding fails the build |
 | `coverage` | Unit tests built with `--coverage`, used by `scripts/coverage.sh` |
+| `bench` | Google Benchmark suite at `-O2`, without tests, used by `scripts/bench.sh` |
 | `release` | Optimized demo build without tests (used by the Docker image) |
 
 ```
@@ -107,6 +108,27 @@ $ open Logger/build/Linux/coverage/report/index.html      # per-line HTML report
 
 In CI, the `linux / coverage` job shows the per-file table in the run summary and uploads
 the HTML report as the `coverage-report` artifact.
+
+### Benchmarks
+
+[Logger/bench/](Logger/bench/) measures the cost of a `LOG_xxx` call with
+[Google Benchmark](https://github.com/google/benchmark) v1.9.5, which CMake downloads when
+`LOGGER_BUILD_BENCHMARKS` is on. It calls the logger only through the public macros, so the same
+suite runs before and after a change to the logger. `scripts/bench.sh` builds it and runs it with
+fixed settings (20 repetitions, random interleaving) and writes the results as JSON.
+Run it in the `bench` image, which adds what `compare.py` needs:
+
+```
+$ docker build --target bench -t log-hare-tail:bench .
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:bench scripts/bench.sh bench/results/before.json
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:bench scripts/bench.sh --benchmark_filter=BM_Disabled
+$ docker run --rm -v "$PWD:/workspace" log-hare-tail:bench python3 \
+    build/Linux/bench/_deps/googlebenchmark-src/tools/compare.py benchmarks \
+    bench/results/before.json bench/results/after.json
+```
+
+Only compare results taken on the same machine, with the same image, close together in time.
+The results print to stderr, because the logger's own console output goes to `/dev/null`.
 
 ### Code style
 
@@ -145,6 +167,7 @@ Linux builds land in `build/Linux/`, so they never mix with builds made on a mac
 | `linux / format` | Every source file matches `.clang-format` |
 | `linux / tidy` | No clang-tidy findings (bug patterns, static analyzer, performance, modernization) |
 | `linux / coverage` | Line coverage of the library stays at or above 85%; HTML report as an artifact |
+| `linux / bench` | The benchmark suite still builds (it is not run: shared runners are too noisy) |
 | `macos / clang` | Builds and passes tests natively on macOS |
 
 ## Configuration

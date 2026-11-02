@@ -47,6 +47,9 @@ jobs:
           - { check: format, cmd: "scripts/format.sh --check" }
           - { check: tidy, cmd: "cmake --workflow --preset tidy" }
           - { check: coverage, cmd: "scripts/coverage.sh" }
+          # Build only: shared runners are too noisy for timing, but the suite must keep compiling
+          # through the refactor it measures
+          - { check: bench, cmd: "cmake --workflow --preset bench" }
     steps:
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3
