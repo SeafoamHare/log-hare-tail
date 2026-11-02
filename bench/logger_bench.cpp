@@ -10,7 +10,7 @@
 #include <benchmark/benchmark.h>
 #include <nlohmann/json.hpp>
 
-#include "core/logger.h"
+#include "log_hare_tail/logger.h"
 
 namespace fs = std::filesystem;
 

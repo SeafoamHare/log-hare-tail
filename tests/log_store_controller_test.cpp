@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#include "core/log_store_controller.h"
+#include "log_hare_tail/log_store_controller.h"
 
 namespace fs = std::filesystem;
 

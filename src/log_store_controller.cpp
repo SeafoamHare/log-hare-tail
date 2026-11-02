@@ -1,4 +1,4 @@
-#include "core/log_store_controller.h"
+#include "log_hare_tail/log_store_controller.h"
 
 LogStoreController::LogStoreController(Config_File &config)
     : file_directory_(config.log_directory), file_filename_(config.filename),

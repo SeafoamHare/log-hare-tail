@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#include "core/logger.h"
+#include "log_hare_tail/logger.h"
 
 // This file never calls Logger::initialize(). Logger is a singleton, so this must stay
 // in its own test executable (tests/CMakeLists.txt builds one per file)

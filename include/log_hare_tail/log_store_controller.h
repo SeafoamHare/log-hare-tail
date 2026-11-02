@@ -1,10 +1,10 @@
-#ifndef LOG_STORE_CONTROLLER_H
-#define LOG_STORE_CONTROLLER_H
+#ifndef LOG_HARE_TAIL_LOG_STORE_CONTROLLER_H
+#define LOG_HARE_TAIL_LOG_STORE_CONTROLLER_H
 
 #include <fstream>
 #include <memory>
 
-#include "config_file.h"
+#include "log_hare_tail/config_file.h"
 class LogStoreController
 {
 private:
@@ -26,4 +26,4 @@ public:
     void Write(const std::string &logmsg);
 };
 
-#endif // LOG_STORE_CONTROLLER_H
+#endif // LOG_HARE_TAIL_LOG_STORE_CONTROLLER_H

@@ -1,5 +1,5 @@
-#ifndef CONFIG_FILE_H
-#define CONFIG_FILE_H
+#ifndef LOG_HARE_TAIL_CONFIG_FILE_H
+#define LOG_HARE_TAIL_CONFIG_FILE_H
 
 #include <sys/stat.h>
 
@@ -27,4 +27,4 @@ private:
     static bool createDirectory(const std::string &path);
 };
 
-#endif // CONFIG_FILE_H
+#endif // LOG_HARE_TAIL_CONFIG_FILE_H

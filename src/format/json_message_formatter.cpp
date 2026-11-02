@@ -1,4 +1,4 @@
-#include "formatMessage/JsonMessageFormatter.h"
+#include "log_hare_tail/format/json_message_formatter.h"
 
 std::string JsonMessageFormatter::format(const sysInfoModel &sysInfo, const logInfoModel &loginfo)
 {

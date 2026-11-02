@@ -1,5 +1,5 @@
-#ifndef PODINFO_RETRIEVER_H
-#define PODINFO_RETRIEVER_H
+#ifndef LOG_HARE_TAIL_POD_INFO_RETRIEVER_H
+#define LOG_HARE_TAIL_POD_INFO_RETRIEVER_H
 
 #include <limits.h>
 #include <unistd.h>
@@ -19,4 +19,4 @@ public:
     static std::string getNamespace();
 };
 
-#endif // PODINFO_RETRIEVER_H
+#endif // LOG_HARE_TAIL_POD_INFO_RETRIEVER_H

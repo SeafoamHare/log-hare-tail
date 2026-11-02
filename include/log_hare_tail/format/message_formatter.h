@@ -1,13 +1,13 @@
-#ifndef MESSAGEFORMATTER_H
-#define MESSAGEFORMATTER_H
+#ifndef LOG_HARE_TAIL_FORMAT_MESSAGE_FORMATTER_H
+#define LOG_HARE_TAIL_FORMAT_MESSAGE_FORMATTER_H
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <string>
 
-#include "models/logInfoModel.h"
-#include "models/sysInfoModel.h"
+#include "log_hare_tail/model/log_info_model.h"
+#include "log_hare_tail/model/sys_info_model.h"
 
 class MessageFormatter
 {
@@ -32,4 +32,4 @@ public:
     }
 };
 
-#endif // MESSAGE_FORMATTER_H
+#endif // LOG_HARE_TAIL_FORMAT_MESSAGE_FORMATTER_H

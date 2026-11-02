@@ -1,3 +1,6 @@
+#ifndef LOG_HARE_TAIL_LOG_CONFIG_H
+#define LOG_HARE_TAIL_LOG_CONFIG_H
+
 #include <iostream>
 #include <string>
 
@@ -27,3 +30,5 @@ private:
     std::string device_id;
     std::string pod_id;
 };
+
+#endif // LOG_HARE_TAIL_LOG_CONFIG_H

@@ -1,4 +1,4 @@
-#include "core/config_file.h"
+#include "log_hare_tail/config_file.h"
 
 #include <cstdint>
 #include <limits>

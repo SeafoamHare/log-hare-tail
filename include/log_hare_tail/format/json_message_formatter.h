@@ -1,10 +1,10 @@
-#ifndef JSONMESSAGEFORMATTER_H
-#define JSONMESSAGEFORMATTER_H
+#ifndef LOG_HARE_TAIL_FORMAT_JSON_MESSAGE_FORMATTER_H
+#define LOG_HARE_TAIL_FORMAT_JSON_MESSAGE_FORMATTER_H
 #include <string>
 
 #include <nlohmann/json.hpp>
 
-#include "MessageFormatter.h"
+#include "log_hare_tail/format/message_formatter.h"
 
 using json = nlohmann::json;
 
@@ -14,4 +14,4 @@ public:
     std::string format(const sysInfoModel &sysInfo, const logInfoModel &loginfo) override;
 };
 
-#endif // JSONMESSAGEFORMATTER_H
+#endif // LOG_HARE_TAIL_FORMAT_JSON_MESSAGE_FORMATTER_H

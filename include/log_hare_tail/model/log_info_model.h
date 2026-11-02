@@ -1,9 +1,9 @@
-#ifndef LOGINFOMODEL_H
-#define LOGINFOMODEL_H
+#ifndef LOG_HARE_TAIL_MODEL_LOG_INFO_MODEL_H
+#define LOG_HARE_TAIL_MODEL_LOG_INFO_MODEL_H
 
 #include <string>
 
-#include "../core/LogLevel.h"
+#include "log_hare_tail/log_level.h"
 struct logInfoModel
 {
 public:
@@ -15,4 +15,4 @@ public:
     std::string function;
 };
 
-#endif // LOGINFOMODEL_H
+#endif // LOG_HARE_TAIL_MODEL_LOG_INFO_MODEL_H

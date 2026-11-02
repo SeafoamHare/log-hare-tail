@@ -1,18 +1,18 @@
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef LOG_HARE_TAIL_LOGGER_H
+#define LOG_HARE_TAIL_LOGGER_H
 
 #include <mutex>
 #include <utility>
 
-#include "LogLevel.h"
-#include "config_file.h"
-#include "formatMessage/JsonMessageFormatter.h"
-#include "formatMessage/MessageFormatter.h"
-#include "formatMessage/PlainMessageFormatter.h"
-#include "log_store_controller.h"
-#include "models/logInfoModel.h"
-#include "models/sysInfoModel.h"
-#include "podInfo_Retriever.h"
+#include "log_hare_tail/config_file.h"
+#include "log_hare_tail/format/json_message_formatter.h"
+#include "log_hare_tail/format/message_formatter.h"
+#include "log_hare_tail/format/plain_message_formatter.h"
+#include "log_hare_tail/log_level.h"
+#include "log_hare_tail/log_store_controller.h"
+#include "log_hare_tail/model/log_info_model.h"
+#include "log_hare_tail/model/sys_info_model.h"
+#include "log_hare_tail/pod_info_retriever.h"
 
 // make_unique is only defined in C++11
 #if __cplusplus == 201103L
@@ -151,4 +151,4 @@ private:
     bool warned_uninitialized_ = false;
 };
 
-#endif // LOGGER_H
+#endif // LOG_HARE_TAIL_LOGGER_H

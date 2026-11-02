@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#include "core/config_file.h"
+#include "log_hare_tail/config_file.h"
 
 namespace fs = std::filesystem;
 

@@ -29,13 +29,13 @@ function(logger_enable_clang_tidy target)
 endfunction()
 
 add_library(logger STATIC
-    src/core/LogLevel.cxx
-    src/core/config_file.cxx
-    src/core/log_store_controller.cxx
-    src/core/logger.cxx
-    src/core/podInfo_Retriever.cxx
-    src/formatMessage/JsonMessageFormatter.cxx
-    src/formatMessage/PlainMessageFormatter.cxx
+    src/config_file.cpp
+    src/log_level.cpp
+    src/log_store_controller.cpp
+    src/logger.cpp
+    src/pod_info_retriever.cpp
+    src/format/json_message_formatter.cpp
+    src/format/plain_message_formatter.cpp
 )
 target_include_directories(logger PUBLIC include)
 target_link_libraries(logger PUBLIC nlohmann_json::nlohmann_json Threads::Threads)

@@ -212,7 +212,7 @@ LOG_INFO() << "Application started" << std::endl;
 Include the header (compile with `-I include` and link the sources under `src/`):
 
 ```cpp
-#include "core/logger.h"
+#include "log_hare_tail/logger.h"
 
 int main() {
     try {

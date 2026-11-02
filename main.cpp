@@ -13,8 +13,8 @@
 #include <vector>
 
 #include <nlohmann/json.hpp>
-// #include "logMessage.cpp"
-#include "include/core/logger.h"
+
+#include "log_hare_tail/logger.h"
 void workerFunction(int id)
 {
     for (int i = 0; i < 10; ++i)

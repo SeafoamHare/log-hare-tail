@@ -1,4 +1,4 @@
-#include "formatMessage/PlainMessageFormatter.h"
+#include "log_hare_tail/format/plain_message_formatter.h"
 
 std::string PlainMessageFormatter::format(const sysInfoModel &sysInfo, const logInfoModel &loginfo)
 {

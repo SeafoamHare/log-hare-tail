@@ -1,6 +1,5 @@
-// Level.h
-#ifndef LEVEL_H
-#define LEVEL_H
+#ifndef LOG_HARE_TAIL_LOG_LEVEL_H
+#define LOG_HARE_TAIL_LOG_LEVEL_H
 
 #include <cstdint>
 #include <string>
@@ -16,4 +15,4 @@ enum class LogLevel : std::uint8_t
 
 std::string loglevelToString(LogLevel level);
 
-#endif // LEVEL_H
+#endif // LOG_HARE_TAIL_LOG_LEVEL_H

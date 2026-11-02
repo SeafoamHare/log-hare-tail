@@ -1,4 +1,4 @@
-#include "core/LogLevel.h"
+#include "log_hare_tail/log_level.h"
 
 std::string loglevelToString(LogLevel level)
 {
