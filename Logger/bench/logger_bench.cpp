@@ -77,12 +77,9 @@ int main(int argc, char **argv)
     fs::remove_all(log_dir);
     // The logger before the refactor ignores "level"; the refactored one must honor it.
     // max_size caps the disk space a long run takes, and rotation is part of what is measured
-    const nlohmann::json config = {{"log_directory", log_dir.string()},
-                                   {"filename", "bench.log"},
-                                   {"max_size", 64 * 1024 * 1024},
-                                   {"max_files", 2},
-                                   {"app_name", "LoggerBench"},
-                                   {"level", "INFO"}};
+    const nlohmann::json config = {{"log_directory", log_dir.string()}, {"filename", "bench.log"},
+                                   {"max_size", 64 * 1024 * 1024},      {"max_files", 2},
+                                   {"app_name", "LoggerBench"},         {"level", "INFO"}};
     const fs::path config_file = log_dir.string() + ".json";
     std::ofstream(config_file) << config.dump();
     Logger::getInstance().initialize(config_file.string());
