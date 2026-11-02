@@ -26,7 +26,9 @@ cmake_install.cmake
 log/
 *.log
 
-# IDE and OS files (.vscode/ is tracked on purpose, for the shared C++ settings)
+# IDE and OS files. .vscode/settings.json is per machine (local paths, auto-generated
+# file associations), while .vscode/c_cpp_properties.json stays tracked
 .vs/
+.vscode/settings.json
 .DS_Store
 Thumbs.db
