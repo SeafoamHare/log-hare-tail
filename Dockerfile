@@ -15,6 +15,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace/Logger
 
+# bench: dev plus what Google Benchmark's tools/compare.py needs. Built only on request
+# (docker build --target bench), so CI does not pay for it
+FROM dev AS bench
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3-scipy \
+    && rm -rf /var/lib/apt/lists/*
+
 # build: compile the project inside the image, which also checks the Dockerfile still works
 FROM dev AS build
 COPY . /workspace

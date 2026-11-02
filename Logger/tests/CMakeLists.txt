@@ -1,9 +1,12 @@
+# Uses an installed GTest (brew install googletest, apt install libgtest-dev) when there is one,
+# otherwise downloads the pinned release. -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER forces the download
 include(FetchContent)
 FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
     URL_HASH SHA256=8ad598c73ad796e0d8280b082cebd82a630d73e73cd3c70057938a6501bba5d7
     DOWNLOAD_EXTRACT_TIMESTAMP ON
+    FIND_PACKAGE_ARGS NAMES GTest
 )
 set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)

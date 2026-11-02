@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 project(log_hare_tail LANGUAGES CXX)
 
 option(LOGGER_BUILD_TESTS "Build the unit tests" ${PROJECT_IS_TOP_LEVEL})
+option(LOGGER_BUILD_BENCHMARKS "Build the Google Benchmark suite in bench/" OFF)
 option(LOGGER_WERROR "Treat compiler warnings as errors" OFF)
 option(LOGGER_CLANG_TIDY "Run clang-tidy on the library and demo while compiling" OFF)
 
@@ -13,7 +14,7 @@ if(LOGGER_CLANG_TIDY)
 endif()
 
 # Warnings (and clang-tidy, when enabled) apply only to this project's own targets,
-# never to googletest, which has its own warning settings
+# never to googletest or Google Benchmark, which have their own warning settings
 function(logger_target_defaults target)
     target_compile_options(${target} PRIVATE -Wall -Wextra $<$<BOOL:${LOGGER_WERROR}>:-Werror>)
     # CMake compiles absolute paths, so __FILE__ (the "file" field of every record) would expose
@@ -53,4 +54,8 @@ logger_enable_clang_tidy(logimp)
 if(LOGGER_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if(LOGGER_BUILD_BENCHMARKS)
+    add_subdirectory(bench)
 endif()
