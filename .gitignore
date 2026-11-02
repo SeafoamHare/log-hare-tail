@@ -1,32 +1,32 @@
-# Prerequisites
-*.d
+# Build output (CMake presets build into build/<OS>/<preset>/)
+build/
+out/
+obj/
+bin/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
 
-# Compiled Object files
-*.slo
-*.lo
+# Compiler output
+*.d
 *.o
 *.obj
-
-# Precompiled Headers
 *.gch
 *.pch
-
-# Compiled Dynamic libraries
+*.a
+*.lib
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
 *.out
 *.app
+
+# Logs written by the demo and the tests
+log/
+*.log
+
+# IDE and OS files (.vscode/ is tracked on purpose, for the shared C++ settings)
+.vs/
+.DS_Store
+Thumbs.db
