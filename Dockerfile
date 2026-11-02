@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         nlohmann-json3-dev \
     && rm -rf /var/lib/apt/lists/*
-WORKDIR /workspace/Logger
+WORKDIR /workspace
 
 # bench: dev plus what Google Benchmark's tools/compare.py needs. Built only on request
 # (docker build --target bench), so CI does not pay for it
@@ -30,6 +30,6 @@ RUN cmake --workflow --preset release
 # runtime: just the binary and its config
 FROM ubuntu:24.04 AS runtime
 WORKDIR /app
-COPY --from=build /workspace/Logger/build/Linux/release/logimp /usr/local/bin/logimp
-COPY --from=build /workspace/Logger/logger_config.json .
+COPY --from=build /workspace/build/Linux/release/logimp /usr/local/bin/logimp
+COPY --from=build /workspace/examples/basic/logger_config.json .
 CMD ["logimp"]

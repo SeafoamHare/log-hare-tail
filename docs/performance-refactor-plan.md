@@ -58,7 +58,7 @@
 目標：建立修改前後都能編譯、執行的同一套 benchmark，並且**在重構前單獨合併進 main**，否則修改前的版本沒有 benchmark 可以量測。
 
 - [x] 以 `FetchContent` 引入 Google Benchmark，並用 `URL_HASH` 固定版本（與 googletest 相同做法）。
-- [x] 新增 CMake 選項 `LOGGER_BUILD_BENCHMARKS`（預設 OFF）與 `Logger/bench/` 目錄。
+- [x] 新增 CMake 選項 `LOGGER_BUILD_BENCHMARKS`（預設 OFF）與 `bench/` 目錄。
 - [x] Benchmark 只透過公開的 `LOG_xxx` 巨集呼叫 logger：
   - `BM_DisabledDebug`：被關閉等級的呼叫。
   - `BM_DisabledDebugExpensiveArgs`：參數含 `std::to_string(...)`，驗證參數未被求值。
@@ -75,7 +75,7 @@
 
 ### 階段 2：量測目前在 container 環境下的延遲（基準線）
 
-- [ ] 在 container 內執行 benchmark，產出 `Logger/bench/results/baseline.json`。
+- [ ] 在 container 內執行 benchmark，產出 `bench/results/baseline.json`。
 - [ ] 記錄量測環境：主機 CPU 與作業系統、Docker 版本、image digest、編譯器版本、commit SHA。
 - [ ] 將基準線數字填入 1.2 的表格，訂出新架構的具體門檻。
 

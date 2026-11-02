@@ -1,0 +1,154 @@
+#ifndef LOG_HARE_TAIL_LOGGER_H
+#define LOG_HARE_TAIL_LOGGER_H
+
+#include <mutex>
+#include <utility>
+
+#include "log_hare_tail/config_file.h"
+#include "log_hare_tail/format/json_message_formatter.h"
+#include "log_hare_tail/format/message_formatter.h"
+#include "log_hare_tail/format/plain_message_formatter.h"
+#include "log_hare_tail/log_level.h"
+#include "log_hare_tail/log_store_controller.h"
+#include "log_hare_tail/model/log_info_model.h"
+#include "log_hare_tail/model/sys_info_model.h"
+#include "log_hare_tail/pod_info_retriever.h"
+
+// make_unique is only defined in C++11
+#if __cplusplus == 201103L
+namespace std
+{
+template <typename T, typename... Args>
+typename std::enable_if<!std::is_array<T>::value, std::unique_ptr<T>>::type make_unique(Args &&...args)
+{
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
+template <typename T>
+typename std::enable_if<std::is_array<T>::value && std::extent<T>::value == 0, std::unique_ptr<T>>::type
+make_unique(size_t size)
+{
+    typedef typename std::remove_extent<T>::type U;
+    return std::unique_ptr<T>(new U[size]());
+}
+
+template <typename T, typename... Args>
+typename std::enable_if<std::extent<T>::value != 0, void>::type
+make_unique(Args &&...) = delete; // NOLINT(cppcoreguidelines-missing-std-forward): deleted, so there is no body
+} // namespace std
+#endif
+#define LOG_DEBUG(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::DEBUG << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_INFO(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::INFO << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_WARN(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::WARN << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_ERROR(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::ERROR << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+#define LOG_CRITICAL(device_id)                                                                                   \
+    Logger::getInstance() << LogLevel::CRITICAL << Logger::LogFunction(__FUNCTION__) << Logger::LogFile(__FILE__) \
+                          << Logger::LogLine(__LINE__) << Logger::DeviceId(device_id)
+
+class Logger
+{
+public:
+    static Logger &getInstance()
+    {
+        static Logger instance;
+        return instance;
+    }
+
+    void initialize(const std::string &config_file);
+
+    Logger(Logger const &) = delete;
+    void operator=(Logger const &) = delete;
+
+    struct LogLine
+    {
+        int value;
+        explicit LogLine(int line) : value(line) {}
+    };
+
+    struct LogFunction
+    {
+        const char *value;
+        explicit LogFunction(const char *function) : value(function) {}
+    };
+
+    struct LogFile
+    {
+        const char *value;
+        explicit LogFile(const char *file) : value(file) {}
+    };
+
+    struct DeviceId
+    {
+        std::string value;
+        DeviceId() = default;
+        explicit DeviceId(std::string id) : value(std::move(id)) {}
+    };
+
+    template <typename T> Logger &operator<<(const T &value)
+    {
+        _stream << value;
+        return *this;
+    }
+
+    Logger &operator<<(LogLevel level)
+    {
+        _logInfo.level = level;
+        return *this;
+    }
+
+    Logger &operator<<(LogLine line)
+    {
+        _logInfo.line = line.value;
+        return *this;
+    }
+
+    Logger &operator<<(LogFunction function)
+    {
+        _logInfo.function = function.value;
+        return *this;
+    }
+
+    Logger &operator<<(LogFile file)
+    {
+        _logInfo.file = file.value;
+        return *this;
+    }
+
+    Logger &operator<<(const DeviceId &d_id)
+    {
+        _logInfo.device_id = d_id.value;
+        return *this;
+    }
+
+    Logger &operator<<(std::ostream &(* /*endl*/)(std::ostream &))
+    {
+        log();
+        return *this;
+    }
+
+private:
+    Logger() = default;
+    ~Logger() = default;
+    void log();
+
+    std::unique_ptr<Config_File> m_config;
+    // Formatters are stateless, so each output keeps one for the Logger's whole lifetime
+    std::unique_ptr<MessageFormatter> console_formatter_ = std::make_unique<JsonMessageFormatter>();
+    std::unique_ptr<MessageFormatter> file_formatter_ = std::make_unique<PlainMessageFormatter>();
+    std::mutex m_mutex;
+    thread_local static std::ostringstream _stream;
+    thread_local static logInfoModel _logInfo;
+    sysInfoModel sysInfo_;
+    std::unique_ptr<LogStoreController> logStoreController;
+    bool warned_uninitialized_ = false;
+};
+
+#endif // LOG_HARE_TAIL_LOGGER_H

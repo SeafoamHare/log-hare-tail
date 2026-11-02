@@ -1,0 +1,30 @@
+#ifndef LOG_HARE_TAIL_CONFIG_FILE_H
+#define LOG_HARE_TAIL_CONFIG_FILE_H
+
+#include <sys/stat.h>
+
+#include <cerrno>
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+class Config_File
+{
+public:
+    explicit Config_File(const std::string &config_file);
+    std::string filename;
+    size_t max_size;
+    int max_files;
+    std::string app_name;
+    std::string log_directory;
+
+private:
+    static bool createDirectory(const std::string &path);
+};
+
+#endif // LOG_HARE_TAIL_CONFIG_FILE_H

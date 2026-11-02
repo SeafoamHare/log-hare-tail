@@ -56,12 +56,11 @@ $ brew install cmake ninja nlohmann-json
 
 ## Build & Run
 
-Builds are driven by [CMake presets](Logger/CMakePresets.json); each preset builds into `Logger/build/<OS>/<preset>/`.
+Builds are driven by [CMake presets](CMakePresets.json); each preset builds into `build/<OS>/<preset>/`.
 
 ```
-$ cd Logger
 $ cmake --workflow --preset dev       # configure, build and run the tests
-$ ./build/Darwin/dev/logimp           # run the demo (build/Linux/dev on Linux)
+$ cd build/Darwin/dev && ./logimp    # run the demo in examples/basic/ (build/Linux/dev on Linux)
 ```
 
 Or build and run inside Docker:
@@ -84,13 +83,12 @@ CTest runs every test case in its own process, in parallel.
 | `gcc`, `clang` | Unit tests with that compiler, warnings treated as errors |
 | `tsan` | Unit tests under ThreadSanitizer (data races) |
 | `asan` | Unit tests under AddressSanitizer + UndefinedBehaviorSanitizer |
-| `tidy` | Builds the library and demo with [clang-tidy](Logger/.clang-tidy); any finding fails the build |
+| `tidy` | Builds the library and demo with [clang-tidy](.clang-tidy); any finding fails the build |
 | `coverage` | Unit tests built with `--coverage`, used by `scripts/coverage.sh` |
 | `bench` | Google Benchmark suite at `-O2`, without tests, used by `scripts/bench.sh` |
 | `release` | Optimized demo build without tests (used by the Docker image) |
 
 ```
-$ cd Logger
 $ cmake --workflow --preset asan                       # configure + build + test in one step
 $ ctest --preset dev -R LoggerStreamTest               # rerun only the tests matching a name
 ```
@@ -103,7 +101,7 @@ It needs gcc and gcovr, so run it in the dev image:
 
 ```
 $ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/coverage.sh
-$ open Logger/build/Linux/coverage/report/index.html      # per-line HTML report
+$ open build/Linux/coverage/report/index.html      # per-line HTML report
 ```
 
 In CI, the `linux / coverage` job shows the per-file table in the run summary and uploads
@@ -111,7 +109,7 @@ the HTML report as the `coverage-report` artifact.
 
 ### Benchmarks
 
-[Logger/bench/](Logger/bench/) measures the cost of a `LOG_xxx` call with
+[bench/](bench/) measures the cost of a `LOG_xxx` call with
 [Google Benchmark](https://github.com/google/benchmark) v1.9.5, which CMake downloads when
 `LOGGER_BUILD_BENCHMARKS` is on. It calls the logger only through the public macros, so the same
 suite runs before and after a change to the logger. `scripts/bench.sh` builds it and runs it with
@@ -132,7 +130,7 @@ The results print to stderr, because the logger's own console output goes to `/d
 
 ### Code style
 
-Formatting follows [Logger/.clang-format](Logger/.clang-format) and CI rejects unformatted code.
+Formatting follows [.clang-format](.clang-format) and CI rejects unformatted code.
 Different clang-format versions can format the same code differently, so run the formatter
 from the dev image, which has the same version CI uses:
 
@@ -211,10 +209,10 @@ LOG_INFO() << "Application started" << std::endl;
 ```
 ### Basic Usage
 
-Include the header (compile with `-I Logger/include` and link the sources under `Logger/src/`):
+Include the header (compile with `-I include` and link the sources under `src/`):
 
 ```cpp
-#include "core/logger.h"
+#include "log_hare_tail/logger.h"
 
 int main() {
     try {
@@ -246,8 +244,8 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
   "@timestamp":"2024-11-08 18:00:27.884",
   "app.name":"MyApplication",
   "device.id":"DEVICE-001",
-  "file":"main.cpp",
-  "line":36,
+  "file":"examples/basic/main.cpp",
+  "line":35,
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
@@ -257,7 +255,7 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 
 #### File Output (Plain Text)
 ```
-2024-11-08 18:00:27.884 [INFO] [main] Application started (file: main.cpp, line: 36) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m) (device: DEVICE-001)
+2024-11-08 18:00:27.884 [INFO] [main] Application started (file: examples/basic/main.cpp, line: 35) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m) (device: DEVICE-001)
 ```
 ### Output Format ( Without device id )
 
@@ -266,8 +264,8 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 {
   "@timestamp":"2024-11-08 18:00:27.884",
   "app.name":"MyApplication",
-  "file":"main.cpp",
-  "line":36,
+  "file":"examples/basic/main.cpp",
+  "line":35,
   "log.level":"INFO",
   "log.logger":"main",
   "message.context":"Application started",
@@ -277,7 +275,7 @@ Each entry is written as a single line (shown pretty-printed here for readabilit
 
 #### File Output (Plain Text)
 ```
-2024-11-08 18:00:27.884 [INFO] [main] Application started (file: main.cpp, line: 36) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
+2024-11-08 18:00:27.884 [INFO] [main] Application started (file: examples/basic/main.cpp, line: 35) (app: MyApplication) (pod.id: hare-pod-6c58ffdbb8-f2m6m)
 ```
 ## Log Rotation
 
@@ -296,18 +294,26 @@ app.log      # Current log file
 3.app.log    # Oldest backup
 ```
 
-<!-- ## Directory Structure
+## Directory Structure
 ```
-Logger/
-├── include/              # Header files
-│   ├── logger.h/       # Level Struct
-│   ├── config_file.h/  
-│   └── podInfo_Retriever.h/  
-├── src/              # Source files
-│   ├── logger.cxx/       # Core functionality
-│   ├── config_file.cxx/  # Additional modules
-│   └── podInfo_Retriever.cxx/  # Get PODid
-``` -->
+include/log_hare_tail/     # Public headers: #include "log_hare_tail/logger.h"
+├── logger.h               # Logger singleton and the LOG_xxx macros
+├── log_level.h
+├── config_file.h          # Reads and validates the JSON config
+├── log_store_controller.h # Writes the log file and rotates it
+├── pod_info_retriever.h   # Reads the Kubernetes pod ID
+├── format/                # JSON (console) and plain-text (file) formatters
+└── model/                 # Data passed to the formatters
+src/                       # Implementation, same layout as include/log_hare_tail/
+tests/                     # GoogleTest unit tests, one executable per file
+bench/                     # Google Benchmark suite
+examples/basic/            # Demo program (logimp) and its logger_config.json
+scripts/                   # format.sh, coverage.sh, bench.sh, check_readme_tree.py
+docs/                      # Design notes
+```
+CI checks this tree against the repository with `scripts/check_readme_tree.py`: every path listed
+must exist, a directory whose contents are listed must list all of them, and every top-level
+directory must appear. After adding, moving or deleting files, update the tree and run the script.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
