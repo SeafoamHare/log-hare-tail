@@ -56,10 +56,9 @@ $ brew install cmake ninja nlohmann-json
 
 ## Build & Run
 
-Builds are driven by [CMake presets](Logger/CMakePresets.json); each preset builds into `Logger/build/<OS>/<preset>/`.
+Builds are driven by [CMake presets](CMakePresets.json); each preset builds into `build/<OS>/<preset>/`.
 
 ```
-$ cd Logger
 $ cmake --workflow --preset dev       # configure, build and run the tests
 $ ./build/Darwin/dev/logimp           # run the demo (build/Linux/dev on Linux)
 ```
@@ -84,13 +83,12 @@ CTest runs every test case in its own process, in parallel.
 | `gcc`, `clang` | Unit tests with that compiler, warnings treated as errors |
 | `tsan` | Unit tests under ThreadSanitizer (data races) |
 | `asan` | Unit tests under AddressSanitizer + UndefinedBehaviorSanitizer |
-| `tidy` | Builds the library and demo with [clang-tidy](Logger/.clang-tidy); any finding fails the build |
+| `tidy` | Builds the library and demo with [clang-tidy](.clang-tidy); any finding fails the build |
 | `coverage` | Unit tests built with `--coverage`, used by `scripts/coverage.sh` |
 | `bench` | Google Benchmark suite at `-O2`, without tests, used by `scripts/bench.sh` |
 | `release` | Optimized demo build without tests (used by the Docker image) |
 
 ```
-$ cd Logger
 $ cmake --workflow --preset asan                       # configure + build + test in one step
 $ ctest --preset dev -R LoggerStreamTest               # rerun only the tests matching a name
 ```
@@ -103,7 +101,7 @@ It needs gcc and gcovr, so run it in the dev image:
 
 ```
 $ docker run --rm -v "$PWD:/workspace" log-hare-tail:dev scripts/coverage.sh
-$ open Logger/build/Linux/coverage/report/index.html      # per-line HTML report
+$ open build/Linux/coverage/report/index.html      # per-line HTML report
 ```
 
 In CI, the `linux / coverage` job shows the per-file table in the run summary and uploads
@@ -111,7 +109,7 @@ the HTML report as the `coverage-report` artifact.
 
 ### Benchmarks
 
-[Logger/bench/](Logger/bench/) measures the cost of a `LOG_xxx` call with
+[bench/](bench/) measures the cost of a `LOG_xxx` call with
 [Google Benchmark](https://github.com/google/benchmark) v1.9.5, which CMake downloads when
 `LOGGER_BUILD_BENCHMARKS` is on. It calls the logger only through the public macros, so the same
 suite runs before and after a change to the logger. `scripts/bench.sh` builds it and runs it with
@@ -132,7 +130,7 @@ The results print to stderr, because the logger's own console output goes to `/d
 
 ### Code style
 
-Formatting follows [Logger/.clang-format](Logger/.clang-format) and CI rejects unformatted code.
+Formatting follows [.clang-format](.clang-format) and CI rejects unformatted code.
 Different clang-format versions can format the same code differently, so run the formatter
 from the dev image, which has the same version CI uses:
 
@@ -211,7 +209,7 @@ LOG_INFO() << "Application started" << std::endl;
 ```
 ### Basic Usage
 
-Include the header (compile with `-I Logger/include` and link the sources under `Logger/src/`):
+Include the header (compile with `-I include` and link the sources under `src/`):
 
 ```cpp
 #include "core/logger.h"

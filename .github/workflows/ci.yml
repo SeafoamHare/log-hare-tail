@@ -74,7 +74,7 @@ jobs:
           {
             echo '### Line coverage'
             echo '```'
-            cat Logger/build/Linux/coverage/report/coverage.txt
+            cat build/Linux/coverage/report/coverage.txt
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload coverage report
@@ -82,16 +82,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: Logger/build/Linux/coverage/report/
+          path: build/Linux/coverage/report/
 
   # Native, outside Docker, to keep macOS (Apple clang, libc++, Homebrew packages) covered
   macos:
     name: macos / clang
     runs-on: macos-15
     timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: Logger
     steps:
       - uses: actions/checkout@v5
       - name: Install dependencies

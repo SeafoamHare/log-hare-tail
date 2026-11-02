@@ -41,5 +41,5 @@ CheckOptions:
   cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
   cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted: true
 
-HeaderFilterRegex: '.*/Logger/include/.*'
+HeaderFilterRegex: '.*/include/(core|formatMessage|models)/.*'
 WarningsAsErrors: '*'

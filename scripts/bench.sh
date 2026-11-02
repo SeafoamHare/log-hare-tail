@@ -2,7 +2,7 @@
 # Builds the benchmark suite (bench preset) and runs it with fixed settings, so results from
 # different commits can be compared. Run it in the bench image:
 #   docker run --rm -v "$PWD:/workspace" log-hare-tail:bench scripts/bench.sh [out.json] [benchmark flags...]
-# The JSON result goes to out.json, relative to Logger/ (default build/<OS>/bench/result.json).
+# The JSON result goes to out.json, relative to the repository root (default build/<OS>/bench/result.json).
 # Other flags are passed on, e.g. --benchmark_filter=BM_Disabled. Compare two results with
 # the compare.py that comes with Google Benchmark:
 #   python3 build/Linux/bench/_deps/googlebenchmark-src/tools/compare.py benchmarks before.json after.json
